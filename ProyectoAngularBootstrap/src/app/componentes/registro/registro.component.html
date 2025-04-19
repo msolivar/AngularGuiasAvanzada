@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header p-4">
+            <h5 class="mb-0"> <i class="fa-solid fa-user-plus me-3"></i>Registro de un nuevo cliente </h5>
+        </div>
+        <div class="card-body p-4">
+            <form class="row g-3" [formGroup]="registroForm" (ngSubmit)="registrar()">
+                <div class="col-6"> <label class="form-label">Cédula: </label> <input type="text" class="form-control"
+                        formControlName="cedula" />
+                </div>
+                <div class="col-6"> <label class="form-label">Nombre: </label> <input type="text" class="form-control"
+                        formControlName="nombre" />
+                </div>
+                <div>
+                    <label>Contraseña: </label>
+                    <input type="password" formControlName="password" placeholder="Contraseña">
+                </div>
+                <div>
+                    <input type="password" formControlName="confirmaPassword" placeholder="Confirmar contraseña">
+                </div>
+                @if (registroForm.hasError('passwordsMismatch')) {
+                <div class="alert alert-danger" role="alert">
+                    Las contraseñas no coinciden
+                </div> }
+                <div class="col-6"> <label class="form-label">Tipo: </label> <select formControlName="tipo"
+                        class="form-select">
+                        <option value="">Seleccione un tipo</option> @for (item of tiposDeEvento; track $index) {
+                        <option value="{{item}}">{{item}}</option> }
+                    </select>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary" [disabled]="registroForm.invalid">
+                        <i class="fa-solid fa-plus me-2"></i>Registrarse
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
