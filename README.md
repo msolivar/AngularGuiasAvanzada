@@ -1,15 +1,21 @@
 # Ejecutar Proyectos en Angular desde CMD:
 
 *ProyectoAngularTest Guia: 13, 14*
+- Ir a la carpeta del proyecto:
 `C:\Users\Usuario\Downloads\ProyectoDemoAngular\ProyectoAngularTest`
+- Ejecutar Angular con el siguiente comando:
 `ng serve --open`
 
 *ProyectoAngularBootstrap Guia: 15*
+- Ir a la carpeta del proyecto:
 `cd C:\Users\Usuario\Documents\GitHub\AngularGuiasAvanzada\ProyectoAngularBootstrap`
+- Ejecutar Angular con el siguiente comando:
 `ng serve --open`
 
 *ProyectoAngularMaquetadoBootstrap Guia: 15.1*
+- Ir a la carpeta del proyecto:
 `cd C:\Users\Usuario\Downloads\ProyectoDemoAngular\ProyectoAngularMaquetadoBootstrap`
+- Ejecutar Angular con el siguiente comando:
 `ng serve --open`
 
 ****************************************************************************************************************************************************
