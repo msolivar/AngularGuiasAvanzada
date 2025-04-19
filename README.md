@@ -2,7 +2,7 @@
 
 *ProyectoAngularTest Guia: 13, 14*
 - Ir a la carpeta del proyecto:
-`C:\Users\Usuario\Downloads\ProyectoDemoAngular\ProyectoAngularTest`
+`cd C:\Users\Usuario\Downloads\ProyectoDemoAngular\ProyectoAngularTest`
 - Ejecutar Angular con el siguiente comando:
 `ng serve --open`
 
