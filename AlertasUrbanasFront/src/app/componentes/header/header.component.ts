@@ -9,5 +9,5 @@ import { RouterModule } from '@angular/router'; // Importar RouterModule
 })
 
 export class HeaderComponent {
-  title = 'ProyectoAngularBootstrap';
+  title = 'Alerta Urbana';
 }

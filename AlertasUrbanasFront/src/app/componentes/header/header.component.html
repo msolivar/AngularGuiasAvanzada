@@ -1,29 +1,63 @@
-<div class="container">
-  <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3"
-  >
-    <div class="col-md-3 mb-2 mb-md-0">
-      <a routerLink=""
-        class="d-inline-flex link-body-emphasis text-decoration-none align-items-center">
-        <i class="fa-solid fa-ticket fs-3"></i>
-        <span class="fs-4 ms-3 me-3">{{ title }}</span>
-      </a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding-left: 20px; padding-right: 20px;">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="">
+      <i class="fa-solid fa-video-camera fs-3"></i>
+      <span class="fs-4 ms-3 me-3">{{ title }}</span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" routerLink="/reporte"
+            >Reporte</a
+          >
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="#">kjkjkjkjk</a>
+        </li> -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Opciones
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a routerLink="cambiar-contrasena/cliente" class="dropdown-item">CambiarContrasena</a></li>
+            <li><a routerLink="" class="dropdown-item">Gestión eventos</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a routerLink="" class="dropdown-item">Historial de eventos</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <div class="col-md-3 text-end">
+        <button
+          type="button"
+          routerLink="/login"
+          class="btn btn-outline-light me-2"
+        >
+          Login
+        </button>
+        <button type="button" routerLink="/registro" class="btn btn-primary">
+          Registro
+        </button>
+      </div>
     </div>
-    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-      <li><a routerLink="" class="nav-link px-2 link-secondary">Inicio</a></li>
-      <li><a routerLink="" class="nav-link px-2">Gestión eventos</a></li>
-      <li><a routerLink="" class="nav-link px-2">Historial de eventos</a></li>
-    </ul>
-    <div class="col-md-3 text-end">
-      <button
-        type="button"
-        routerLink="/login"
-        class="btn btn-outline-primary me-2"
-      >
-        Login
-      </button>
-      <button type="button" routerLink="/registro" class="btn btn-primary">
-        Registro
-      </button>
-    </div>
-  </header>
-</div>
+  </div>
+</nav>
