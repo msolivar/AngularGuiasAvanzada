@@ -3,7 +3,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   FormControl,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoginService } from '../../servicios/login.service';
@@ -27,7 +27,7 @@ export class LoginComponent {
 
   loginForm: FormGroup = new FormGroup({
     correo: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(7)]),
   });
 
   constructor(

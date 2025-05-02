@@ -2,6 +2,7 @@ import { Injectable,Inject,PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { Buffer } from "buffer";
 import { isPlatformBrowser } from '@angular/common';
+// import { json } from 'stream/consumers';
 
 const TOKEN_KEY = "AuthToken";
 

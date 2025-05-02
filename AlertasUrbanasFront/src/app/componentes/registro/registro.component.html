@@ -10,7 +10,7 @@
               #entradaInput
               placeholder="Ingresa el ID de usuario"
               class="form-control mb-2"
-              value="67fba63abc7f8d05c60f09bd"
+              value="67fbea40918e22249d658f5c"
             />
             <button
               class="btn btn-primary"
@@ -23,48 +23,42 @@
           
         <div class="card-body p-4">
             
-            <form class="row g-3" #f="ngForm" (ngSubmit)="registrar()">
+            <form class="row g-3" [formGroup]="loginForm" (ngSubmit)="registrar()">
                 <div class="d-flex align-items-center">
-                    <label  >Nombre: </label>
-                    <input class="form-control" type="text" name="nombre" [(ngModel)]="registroClienteDTO.nombre" />
+                    <label class="mr-10">Nombre: </label>
+                    <input type="text" formControlName="nombre" class="form-control" />
                 </div>
-                <div>
-                    <label>Foto: </label>
-                    <input type="file" name="fotoPerfil" (change)="onFileChange($event)" required />
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Telefono: </label>
+                    <input type="text" formControlName="telefono" class="form-control" />
                 </div>
-                <div>
-                    <label>Foto: </label>
-                    <input type="text" name="fotoPerfil" [(ngModel)]="registroClienteDTO.fotoPerfil" />
-                </div>
-                <div>
-                    <label>Ciudad: </label>
-                    <select name="ciudadResidencia" required [(ngModel)]="registroClienteDTO.ciudadResidencia">
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Ciudad: </label>
+                    <select formControlName="ciudad" required class="form-select" >
                         <option value="" selected>Seleccione una ciudad</option>
-                        @for (item of ciudades; track $index) { <option [value]="item">{{item}}</option> }
+                        @for (item of ciudades; track $index) { 
+                            <option [value]="item">{{item}}</option> 
+                        }
                     </select>
                 </div>
-                <div>
-                    <label>Ciudad: </label>
-                    <input type="text" name="ciudadResidencia" [(ngModel)]="registroClienteDTO.ciudadResidencia" readonly />
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Direccion: </label>
+                    <input type="text" formControlName="direccion" class="form-control" />
                 </div>
-                <div>
-                    <label>Username: </label>
-                    <input type="text" name="nickname" [(ngModel)]="registroClienteDTO.nickname" />
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Correo electrónico: </label>
+                    <input type="email" formControlName="email" class="form-control"  />
                 </div>
-                <div>
-                    <label>Correo electrónico: </label>
-                    <input type="email" name="email" [(ngModel)]="registroClienteDTO.email" />
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Contraseña: </label>
+                    <input type="password" formControlName="password" class="form-control" />
                 </div>
-                <div>
-                    <label>Contraseña: </label>
-                    <input type="password" name="password" [(ngModel)]="registroClienteDTO.password" />
-                </div>
-                <div>
-                    <label>Repetir contraseña: </label>
-                    <input type="password" name="confirmaPassword" [(ngModel)]="registroClienteDTO.confirmaPassword" required />
+                <div class="d-flex align-items-center">
+                    <label class="mr-10">Repetir contraseña: </label>
+                    <input type="password" formControlName="confirmaPassword" class="form-control" required />
                 </div>
                 @if (!sonIguales()) { <p>Las contraseñas no coinciden</p> }
-                <button type="submit" class="btn btn-primary" [disabled]="f.invalid || !sonIguales()">Registrarse</button>
+                <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid && !sonIguales()">Registrarse</button>
                 <!-- <button type="submit" [disabled]="f.invalid">Registrarse</button> -->
             </form>
         </div>
