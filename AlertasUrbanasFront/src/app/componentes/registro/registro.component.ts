@@ -26,6 +26,9 @@ export class RegistroComponent {
 
   salidaTexto = '';
 
+  // Para alternar visibilidad
+  mostrarPassword: boolean = false; 
+
   loginForm: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.minLength(7)]),
     telefono: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/), Validators.minLength(7)]),
@@ -87,7 +90,7 @@ export class RegistroComponent {
         console.log('Cliente registrado Revise en su badeja de entrada, si su correo existe se le ha enviado un correo con el link de recuperación');
       },
       error: (error) => {
-        console.log(JSON.stringify(error));
+        console.error(JSON.stringify(error));
 
         if (error.status === 500) {
           console.error('Error en el servidor');

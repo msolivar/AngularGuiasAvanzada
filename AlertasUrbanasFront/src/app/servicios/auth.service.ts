@@ -34,8 +34,8 @@ export class AuthService {
     return this.http.post<any>(`${this.authURL}/recuperarPassword`, RecuperarCuentaDTO);
   }
 
-  public cambiarContraseña(cambioPasswordDTO: CambioPasswordDTO): Observable<MensajeDTO> {
-    return this.http.post<MensajeDTO>(`${this.authURL}/cambiar-password`, cambioPasswordDTO);
+  public cambiarContraseña(cambioPasswordDTO: CambioPasswordDTO): Observable<any> {
+    return this.http.post<any>(`${this.authURL}/cambiar-password`, cambioPasswordDTO);
   }
 
 }

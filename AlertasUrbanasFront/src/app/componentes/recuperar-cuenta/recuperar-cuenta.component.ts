@@ -5,6 +5,7 @@ import { LoginService } from '../../servicios/login.service';
 // import { AlertaComponent } from '../alerta/alerta.component';
 import { AuthService } from '../../servicios/auth.service';
 import { RecuperarCuentaDTO } from '../../dto/RecuperarCuentaDTO';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recuperar-cuenta',
@@ -18,7 +19,7 @@ export class RecuperarCuentaComponent {
   // alerta!:Alerta;
   recuperarDTO: RecuperarCuentaDTO;
 
-  constructor(private authService: AuthService ) { 
+  constructor(private router: Router, private authService: AuthService ) { 
     this.recuperarDTO = new RecuperarCuentaDTO();
   }
 
@@ -31,6 +32,7 @@ export class RecuperarCuentaComponent {
     this.authService.enviarLinkRecuperacionPass(this.recuperarDTO).subscribe({
       next: (data) => {
         console.log('Revise en su badeja de entrada, si su correo existe se le ha enviado un correo con el link de recuperación');
+        this.router.navigate(['/cambiar-contrasena', this.recuperarDTO.email]);
       },
       error: (error) => {
         // console.error(JSON.stringify(error));

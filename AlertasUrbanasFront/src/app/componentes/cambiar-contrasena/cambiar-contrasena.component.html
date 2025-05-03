@@ -9,28 +9,48 @@
         <div class="card-body">
           <form (ngSubmit)="cambiarContrasena()" #passwordForm="ngForm">
 
-            <div class="form-group">
+            <div class="mb-3">
               <label for="correo">Correo Electronico:</label>
               <input type="email" class="form-control ng-pristine ng-invalid ng-touched"
                 formcontrolname="correo" id="correo" name="correo" placeholder="Ingrese el correo electrónico"
-                [(ngModel)]="cambioPassword.correo"  ng-reflect-name="correo">
+                [(ngModel)]="cambioPassword.correo"  ng-reflect-name="correo" readonly>
             </div>
-            <div class="form-group">
+
+            <div class="mb-3"> 
+              <label for="comentarios">Token</label>
+              <textarea [(ngModel)]="cambioPassword.token"
+                class="form-control"
+                rows="4"
+                id="comentarios"
+                name="comentarios"
+                placeholder="Ingrese el token"></textarea>            
+            </div>
+
+            <div class="mb-3">
               <label for="nuevaContrasena">Contraseña nueva:</label>
-              <input type="password" class="form-control" id="nuevaContrasena" name="contrasenia"
+              <input [type]="mostrarPassword ? 'text' : 'password'" class="form-control" id="nuevaContrasena" name="contrasenia"
                 [(ngModel)]="cambioPassword.nuevaContrasena" required>
             </div>
-            <div class="form-group">
+
+            <div class="mb-3">
               <label for="confirmarContrasena">Confirmar contraseña:</label>
-              <input type="password" class="form-control" id="confirmarContrasena" name="contraseniaConfirmada"
+              <input [type]="mostrarPassword ? 'text' : 'password'" class="form-control" id="confirmarContrasena" name="contraseniaConfirmada"
                 [(ngModel)]="cambioPassword.contraseniaConfirmada" required>
             </div>
-            <div *ngIf="contraseniasNoCoinciden" class="alert alert-danger mt-2">
-              Las contraseñas no coinciden
+
+            <div class="form-check mb-3">
+              <label class="form-check-label" for="VerPassword">Ver contraseña</label>
+              <input name="VerPassword" id="VerPassword" type="checkbox" class="form-check-input" (change)="mostrarPassword = !mostrarPassword">    
             </div>
-            <br>
+
+            @if (!sonIguales()) { 
+              <div class="alert alert-danger mt-2">
+                Las contraseñas no coinciden
+              </div>
+            }
+            
             <button type="submit" class="btn btn-primary btn-block"
-              [disabled]="passwordForm.invalid || contraseniasNoCoinciden">Cambiar contraseña</button>
+              [disabled]="passwordForm.invalid && !sonIguales()">Cambiar contraseña</button>
             <br>
           </form>
         </div>

@@ -63,11 +63,10 @@ export class TokenService {
       return values;
     }
 
-    public getCodigo(): string {
+    public getId(): string {
       const token = this.getToken();
       if (token) {
-        const values = this.decodePayload(token);
-        return values.id;
+      return token;
       }
       return "";
     }
@@ -76,7 +75,8 @@ export class TokenService {
       const token = this.getToken();
       if (token) {
       const values = this.decodePayload(token);
-      return values.sub;
+      return values.email;
+      // return values.sub;
       }
       return "";
     }
@@ -86,15 +86,6 @@ export class TokenService {
       if (token) {
       const values = this.decodePayload(token);
       return values.nombre;
-      }
-      return "";
-    }
-
-    public getId(): string {
-      const token = this.getToken();
-      if (token) {
-      const values = this.decodePayload(token);
-      return values.id;
       }
       return "";
     }
@@ -109,7 +100,15 @@ export class TokenService {
     }
 
     public isLoggedCliente(): boolean {
-      if (this.getRole() == "CLIENTE")
+      if (this.getRole() == "ROLE_CLIENTE")
+        {
+          return true;
+        }
+        return false;
+    }
+
+    public isLoggedAdmin(): boolean {
+      if (this.getRole() == "ROLE_ADMINISTRADOR")
         {
           return true;
         }

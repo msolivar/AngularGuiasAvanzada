@@ -1,71 +1,80 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CambioPasswordDTO } from '../../dto/CambioPasswordDTO';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
-// import { Alerta } from '../../dto/alerta';
-// import { AlertaComponent } from '../alerta/alerta.component';
 import { TokenService } from '../../servicios/token.service';
 
 @Component({
   selector: 'app-cambiar-contrasena',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './cambiar-contrasena.component.html',
   styleUrl: './cambiar-contrasena.component.css'
 })
-export class CambiarContrasenaComponent {
+export class CambiarContrasenaComponent implements OnInit {
   tokenUrl: string = '';
   contraseniasNoCoinciden: boolean = false;
-  cambioPasswordDto!: CambioPasswordDTO;
-  // alerta!:Alerta;
+  cambioPasswordDto: CambioPasswordDTO = new CambioPasswordDTO();
 
-  cambioPassword= {
+  mostrarPassword: boolean = false;
+
+  cambioPassword = {
+    token: '',
     correo: '',
     nuevaContrasena: '',
-    contraseniaConfirmada: ''
+    contraseniaConfirmada: '',
   };
 
-  constructor(private route: ActivatedRoute, private authService:AuthService,private tokenService:TokenService) {
-    // this.route.paramMap.subscribe(params => {
-    //   this.tokenUrl = params.get('token') || '';
-    // });
+  constructor(
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private tokenService: TokenService
+  ) {
+    this.route.paramMap.subscribe(params => {
+      this.tokenUrl = params.get('token') || '';
+    });
+  }
+
+  ngOnInit(): void {
+    this.cambioPassword.correo = this.tokenUrl;
+  }
+
+  public sonIguales(): boolean {
+    const password = this.cambioPassword.nuevaContrasena;
+    const confirmar = this.cambioPassword.contraseniaConfirmada;
+
+    return (
+      password?.trim() !== '' &&
+      confirmar?.trim() !== '' &&
+      password === confirmar
+    );
   }
 
   cambiarContrasena() {
-    if (this.cambioPassword.nuevaContrasena !== this.cambioPassword.contraseniaConfirmada) {
-      this.contraseniasNoCoinciden = true;
-      return;
-    }
-    
-    this.cambioPasswordDto = new CambioPasswordDTO(
-      this.tokenService.getId(),
-      this.cambioPassword.correo,
-      this.cambioPassword.nuevaContrasena
-    );
+    this.cambioPasswordDto.token = this.cambioPassword.token;
+    this.cambioPasswordDto.email = this.cambioPassword.correo;
+    this.cambioPasswordDto.nuevaPassword = this.cambioPassword.nuevaContrasena;
+
+    console.log('Token enviado:', this.cambioPasswordDto);
 
     this.authService.cambiarContraseña(this.cambioPasswordDto).subscribe({
       next: (data) => {
-        console.log("Contraseña modificada correctamente");
-        this.cambioPassword = {
-          correo: '',
-          nuevaContrasena: '',
-          contraseniaConfirmada: ''
-        };
+        console.log('Contraseña modificada correctamente', data);
       },
       error: (error) => {
-        if (error.status === 400) {
-          console.log('Error de conexión');
-        } else {
-          if (error.error && error.error.respuesta) {
-            console.log(error.error.respuesta);
-          } else {
-            console.error('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
-          }
-        }
-      }
-    });
 
+        if (error.status === 200) {
+          console.log('Contraseña modificada correctamente');
+        }
+
+        // console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } 
+      },
+    });
   }
 }

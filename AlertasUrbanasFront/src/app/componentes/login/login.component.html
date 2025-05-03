@@ -5,33 +5,31 @@
         <div class="text-center mb-4">
           <h1>Iniciar Sesión</h1>
         </div>
-        <!-- <app-alerta [alerta]="alerta"></app-alerta> -->
+
         <form [formGroup]="loginForm" (ngSubmit)="login()">
           <div class="mb-3">
-            <label for="correo" class="form-label">Correo Electronico:</label>
+            <label for="correo" class="form-label">Correo Electrónico:</label>
             <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo electrónico">
           </div>
 
           <div class="mb-3">
             <label for="password" class="form-label">Contraseña:</label>
-            <input type="password" formControlName="password" class="form-control" id="password" placeholder="Digite la contraseña">
+            <input [type]="mostrarPassword ? 'text' : 'password'" formControlName="password" class="form-control" id="password" placeholder="Digite la contraseña">
           </div>
 
           <div class="form-check mb-3">
-            <input name="VerPassword" id="VerPassword" type="checkbox" class="form-check-input">
-            <label class="form-check-label" style="font-size:13pt; background-color:#F1F1F1; color:black;" for="VerPassword">Ver contraseña</label>
+            <label class="form-check-label" for="VerPassword">Ver contraseña</label>
+            <input name="VerPassword" id="VerPassword" type="checkbox" class="form-check-input" (change)="mostrarPassword = !mostrarPassword">    
           </div>
 
           <button type="submit" 
-          class="btn btn-primary w-100"
-          [disabled]="loginForm.invalid">Ingresar</button>
-
+                  class="btn btn-primary w-100"
+                  [disabled]="loginForm.invalid">Ingresar</button>
         </form>
-        <div class="text-center mt-4">
 
-          <h6>¡Olvido su contraseña! <a  routerLink="/recuperar-cuenta" class="link-primary"> Recuperar</a></h6>
-          <h6>¡No tienes cuenta! <a href="/registro" class="link-primary"> Registrate</a></h6>
-          
+        <div class="text-center mt-4">
+          <h6>¿Olvidó su contraseña? <a routerLink="/recuperar-cuenta" class="link-primary">Recuperar</a></h6>
+          <h6>¿No tiene cuenta? <a routerLink="/registro" class="link-primary">Registrarse</a></h6>
         </div>
       </div>
     </div>
