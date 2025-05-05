@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { LoginService } from '../../servicios/login.service';
 // import { Alerta } from '../../dto/alerta';
 // import { AlertaComponent } from '../alerta/alerta.component';
@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-recuperar-cuenta',
   templateUrl: './recuperar-cuenta.component.html',
- standalone: true,
- imports: [FormsModule],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule],
   styleUrls: ['./recuperar-cuenta.component.css']
 })
 export class RecuperarCuentaComponent {

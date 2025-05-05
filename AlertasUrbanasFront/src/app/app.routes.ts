@@ -4,6 +4,8 @@ import { LoginComponent } from './componentes/login/login.component';
 import { RegistroComponent } from './componentes/registro/registro.component';
 import { RecuperarCuentaComponent } from './componentes/recuperar-cuenta/recuperar-cuenta.component';
 import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cambiar-contrasena.component';
+import { CategoriaComponent } from './componentes/categoria/categoria.component';
+import { CuentaComponent } from './componentes/cuenta/cuenta.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -11,5 +13,15 @@ export const routes: Routes = [
   { path: 'registro', component: RegistroComponent },
   { path: 'recuperar-cuenta', component: RecuperarCuentaComponent },
   { path: 'cambiar-contrasena/:token', component: CambiarContrasenaComponent },
+
+  //categoria
+  { path: 'categoria', component: CategoriaComponent },
+  
+  //cuenta
+  { path: 'cuenta', component: CuentaComponent },
+
+  //Ruta Global
   { path: '**', pathMatch: 'full', redirectTo: '' },
+
+  
 ];

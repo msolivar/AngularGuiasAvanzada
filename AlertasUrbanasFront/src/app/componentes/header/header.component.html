@@ -37,12 +37,14 @@
             Opciones
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a routerLink="cambiar-contrasena/cliente" class="dropdown-item">CambiarContrasena</a></li>
-            <li><a routerLink="" class="dropdown-item">Gestión eventos</a></li>
+            <li><a routerLink="cambiar-contrasena/cliente" class="dropdown-item">Cambiar Contrasena</a></li>
+            <li><a routerLink="categoria" class="dropdown-item">Gestionar Categoria</a></li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a routerLink="" class="dropdown-item">Historial de eventos</a>
+              <a routerLink="cuenta" class="dropdown-item">Gestionar Cuenta</a>
             </li>
+            <li><a routerLink="categoria" class="dropdown-item">Gestionar Categoria</a></li>
+            <button type="button" (click)="logout()" class="btn btn-link">Logout</button>
           </ul>
         </li>
       </ul>

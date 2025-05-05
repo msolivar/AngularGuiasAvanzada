@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
 import { TokenService } from '../../servicios/token.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cambiar-contrasena',
@@ -29,6 +30,7 @@ export class CambiarContrasenaComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
     private tokenService: TokenService
   ) {
@@ -61,12 +63,15 @@ export class CambiarContrasenaComponent implements OnInit {
 
     this.authService.cambiarContraseña(this.cambioPasswordDto).subscribe({
       next: (data) => {
-        console.log('Contraseña modificada correctamente', data);
+        console.log('Contraseña modificada correctamente');
       },
       error: (error) => {
-
+        console.error(error);
+        
         if (error.status === 200) {
-          console.log('Contraseña modificada correctamente');
+          alert('Contraseña modificada correctamente');
+
+          this.router.navigate(['/']);
         }
 
         // console.error(JSON.stringify(error));

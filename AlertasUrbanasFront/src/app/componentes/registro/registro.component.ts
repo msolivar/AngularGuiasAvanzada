@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
 import { RegistroClienteDTO } from '../../dto/registro-cliente-dto';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,RouterModule], // Habilitar ngModel
+  imports: [ReactiveFormsModule, CommonModule, RouterModule], // Habilitar ngModel
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css',
 })
@@ -32,14 +33,13 @@ export class RegistroComponent {
   loginForm: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.minLength(7)]),
     telefono: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/), Validators.minLength(7)]),
-    ciudad: new FormControl('', [Validators.required, Validators.minLength(7)]),
-    direccion: new FormControl('', [Validators.required, Validators.minLength(7)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(7)]),
-    confirmaPassword: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(7)]) 
+    ciudad: new FormControl('', [Validators.required]),
+    direccion: new FormControl('', [Validators.required, Validators.minLength(7)]),
+    password: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(7)])
   });
 
-  constructor(private RegistroService: RegistroUsuarioService) {
+  constructor(private router: Router, private RegistroService: RegistroUsuarioService) {
     this.registroClienteDTO = new RegistroClienteDTO();
     this.ciudades = [];
     this.cargarCiudades(); // Llamado para llenar las ciudades
@@ -51,7 +51,7 @@ export class RegistroComponent {
         console.log(JSON.stringify(data));
         
         if (data) {
-          const r = data;
+          const r = data.data;
           this.salidaTexto = `
           Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
           Telefono: ${r.telefono}, Direccion: ${r.direccion}`;
@@ -87,13 +87,19 @@ export class RegistroComponent {
     // console.log(this.registroClienteDTO);
     this.RegistroService.registrarUsuario(this.registroClienteDTO).subscribe({
       next: (data) => {
-        console.log('Cliente registrado Revise en su badeja de entrada, si su correo existe se le ha enviado un correo con el link de recuperación');
+        console.log(JSON.stringify(data));
+
+        if (data) {
+          alert('Cliente registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
+          this.router.navigate(['/']);
+        }
+        
       },
       error: (error) => {
         console.error(JSON.stringify(error));
 
         if (error.status === 500) {
-          console.error('Error en el servidor');
+          alert(error.error.data);
         } else {
           if (error.error && error.error.mensaje) {
             console.log(error.error.data);
@@ -103,17 +109,6 @@ export class RegistroComponent {
         }
       },
     });
-  }
-
-  public sonIguales(): boolean {
-    const password = this.loginForm.get('password')?.value;
-    const confirmar = this.loginForm.get('confirmaPassword')?.value;
-  
-    return (
-      password?.trim() !== '' &&
-      confirmar?.trim() !== '' &&
-      password === confirmar
-    );
   }
 
   private cargarCiudades() {

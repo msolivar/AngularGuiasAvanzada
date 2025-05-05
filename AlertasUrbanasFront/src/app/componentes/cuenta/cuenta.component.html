@@ -1,0 +1,61 @@
+<p>cuenta works!</p>
+<div class="container">
+    <h2>Gestión de Personas</h2>
+
+    <!-- Formulario Reactivo para agregar o editar personas -->
+    <form [formGroup]="personaForm" (ngSubmit)="guardarPersona()">
+        <div>
+            <label>Nombre:</label>
+            <input type="text" formControlName="nombre" />
+            <div *ngIf="nombre?.touched && nombre?.invalid" style="color: red;">
+                <small *ngIf="nombre?.errors?.['required']">El nombre es obligatorio.</small>
+                <small *ngIf="nombre?.errors?.['minlength']">Debe tener al menos 7 caracteres.</small>
+            </div>
+        </div>
+
+        <div>
+            <label>Edad:</label>
+            <input type="text" formControlName="edad" />
+            <div *ngIf="edad?.touched && edad?.invalid" style="color: red;">
+                <small *ngIf="edad?.errors?.['required']">La edad es obligatoria.</small>
+                <small *ngIf="edad?.errors?.['pattern']">Debe ser un número válido.</small>
+            </div>
+        </div>
+
+        <button type="submit" [disabled]="personaForm.invalid">
+            {{ editando ? 'Actualizar Persona' : 'Agregar Persona' }}
+        </button>
+    </form>
+
+    <hr />
+
+    <!-- Campo de búsqueda -->
+    <div>
+        <label>Buscar:</label>
+        <input type="text" [(ngModel)]="terminoBusqueda" placeholder="Buscar por nombre o edad" />
+    </div>
+
+    <h1>Lista de Personas</h1>
+
+    <!-- Tabla de personas -->
+    <table border="1" style="margin-top: 10px;">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of personasFiltradas(); let i = index">
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.edad }}</td>
+                <td>
+                    <button (click)="editarPersona(i)">Editar</button>
+                    <button (click)="eliminarPersona(i)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
