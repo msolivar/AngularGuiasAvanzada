@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
-import { ReporteDTO } from '../../dto/reporteDTO';
+import { ReporteDTO } from '../../dto/reporte-dto';
 import { CategoriasService } from '../../servicios/categorias.service';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -66,6 +66,7 @@ export class  ReportesComponent {
     this.reporteDTO.descripcion = this.loginForm.get('descripcion')?.value;
     this.reporteDTO.horarios = fechaCreacion;
     this.reporteDTO.idUsuario = this.tokenService.getEmail();
+    this.reporteDTO.estado = 'PENDIENTE';
     
     console.log(this.reporteDTO);
     
