@@ -6,6 +6,7 @@ import { RecuperarCuentaComponent } from './componentes/recuperar-cuenta/recuper
 import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cambiar-contrasena.component';
 import { CategoriaComponent } from './componentes/categoria/categoria.component';
 import { CuentaComponent } from './componentes/cuenta/cuenta.component';
+import { ReportesComponent }  from './componentes/reportes/reportes.component';
 
 export const routes: Routes = [
   { path: '', component: InicioComponent },
@@ -20,8 +21,10 @@ export const routes: Routes = [
   //cuenta
   { path: 'cuenta', component: CuentaComponent },
 
+  //reportes
+  { path: 'reportes', component: ReportesComponent },
+
   //Ruta Global
   { path: '**', pathMatch: 'full', redirectTo: '' },
-
   
 ];

@@ -13,7 +13,7 @@ import { TokenService } from '../../servicios/token.service';
   templateUrl: './categoria.component.html',
   styleUrl: './categoria.component.css'
 })
-export class CategoriaComponent  implements OnInit {
+export class CategoriaComponent implements OnInit {
   //Inicializar Clase
   categoriaDTO = new CategoriaDTO();
 
@@ -47,6 +47,13 @@ export class CategoriaComponent  implements OnInit {
   editarFormulario(categoria: CategoriaDTO): void {
     this.mostrarBotonAgregar = false;
     this.categoriaSeleccionada = { ...categoria };
+  }
+
+  //Limpiar Campos
+  limpiarCampos(){
+    this.categoriaDTO.id = ""; 
+    this.categoriaDTO.nombre = ""; 
+    this.categoriaDTO.descripcion = "";
   }
 
   //Crear*
@@ -151,7 +158,7 @@ export class CategoriaComponent  implements OnInit {
   getCategorias(): void {
     this.categoriasService.obtenerCategorias().subscribe({
       next:(data) => {
-        this.categorias = data.data;
+        this.categorias = data.data.nombre;
         console.log("Categorias encontradas: ", JSON.stringify(data));
       },
       error: (error) => {

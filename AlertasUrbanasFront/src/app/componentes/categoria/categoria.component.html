@@ -46,6 +46,11 @@
                     class="btn btn-warning" (click)="actualizarCategoria()">
                     <i class="fa-solid fa-rotate-right"></i> Actualizar
                 </button>
+                <br><br>
+                <button [disabled]="categoriaForm.invalid" type="button"
+                    class="btn btn-danger" (click)="limpiarCampos()">
+                    <i class="fa-solid fa-rotate-right"></i> Limpiar Campos
+                </button>
             </div>
 
         </div>
