@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { 
+import {
   FormGroup,
   ReactiveFormsModule,
   FormControl,
-  Validators 
+  Validators
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
@@ -20,7 +20,7 @@ import { TokenService } from '../../servicios/token.service';
   templateUrl: './reportes.component.html',
   styleUrl: './reportes.component.css'
 })
-export class  ReportesComponent {
+export class ReportesComponent {
   //Inicializar Clase
   reporteDTO = new ReporteDTO();
 
@@ -28,7 +28,9 @@ export class  ReportesComponent {
   categorias: { id: string, nombre: string }[] = [];
 
   // Archivos
-  archivos!:FileList;
+  archivos!: FileList;
+
+  salidaTexto = '';
 
   loginForm: FormGroup = new FormGroup({
     titulo: new FormControl('', [Validators.required, Validators.minLength(7)]),
@@ -38,22 +40,23 @@ export class  ReportesComponent {
   });
 
   constructor(private router: Router,
-    private categoriasService: CategoriasService, 
+    private categoriasService: CategoriasService,
     private RegistroService: RegistroUsuarioService,
-    private tokenService:TokenService) {
+    private tokenService: TokenService) {
 
     this.reporteDTO = new ReporteDTO();
     this.categorias = [];
     this.cargarCategoria();
+    this.cargarEmail();
   }
 
   public onFileChange(event: any) {
     if (event.target.files.length > 0) {
-    const files = event.target.files;
-    console.log(files);
+      const files = event.target.files;
+      console.log(files);
 
-    this.archivos = event.target.files;
-    this.reporteDTO.imagenes = this.archivos[0].name;
+      this.archivos = event.target.files;
+      this.reporteDTO.imagenes = this.archivos[0].name;
     }
   }
 
@@ -65,11 +68,10 @@ export class  ReportesComponent {
     this.reporteDTO.categoria = this.loginForm.get('categoria')?.value;
     this.reporteDTO.descripcion = this.loginForm.get('descripcion')?.value;
     this.reporteDTO.horarios = fechaCreacion;
-    this.reporteDTO.idUsuario = this.tokenService.getEmail();
     this.reporteDTO.estado = 'PENDIENTE';
-    
+
     console.log(this.reporteDTO);
-    
+
     // delete this.registroClienteDTO.confirmaPassword;
     // console.log(this.registroClienteDTO);
     // this.RegistroService.registrarUsuario(this.registroClienteDTO).subscribe({
@@ -80,7 +82,7 @@ export class  ReportesComponent {
     //       alert('Cliente registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
     //       this.router.navigate(['/']);
     //     }
-        
+
     //   },
     //   error: (error) => {
     //     console.error(JSON.stringify(error));
@@ -101,9 +103,9 @@ export class  ReportesComponent {
   cargarCategoria(): void {
 
     this.categoriasService.obtenerCategorias().subscribe({
-      next:(data) => {
+      next: (data) => {
         this.categorias = data.data;
-        
+
         console.log("Categorias encontradas: ", JSON.stringify(data));
       },
       error: (error) => {
@@ -120,6 +122,38 @@ export class  ReportesComponent {
         }
       }
     })
+  }
+
+  public cargarEmail() {
+
+    let idUsuario = this.tokenService.getEmail();
+
+    this.RegistroService.obtenerUsuario(idUsuario).subscribe({
+      next: (data) => {
+        console.log(JSON.stringify(data));
+
+        if (data) {
+          const r = data.data;
+
+          this.reporteDTO.idUsuario = r.id;
+
+        } else {
+          console.error('No se encontró el usuario.');
+        }
+      },
+      error: (error) => {
+
+        if (error.status === 404) {
+          this.salidaTexto = 'Usuario no encontrado.';
+        } else if (error.status === 403) {
+          this.salidaTexto = 'Usuario no autentificado';
+        } else {
+          this.salidaTexto = 'Error al obtener la información.';
+        }
+
+        // console.error(JSON.stringify(error));
+      },
+    });
   }
 }
 

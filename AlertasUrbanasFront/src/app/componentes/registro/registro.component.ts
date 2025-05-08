@@ -52,8 +52,8 @@ export class RegistroComponent {
         
         if (data) {
           const r = data.data;
-          this.salidaTexto = `
-          Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
+          
+          this.salidaTexto = `Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
           Telefono: ${r.telefono}, Direccion: ${r.direccion}`;
         } else {
           this.salidaTexto = 'No se encontró el usuario.';
