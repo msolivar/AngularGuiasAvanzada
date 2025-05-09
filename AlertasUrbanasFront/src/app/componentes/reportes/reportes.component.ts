@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
 import { ReporteDTO } from '../../dto/reporte-dto';
+import { ReporteService } from '../../servicios/reporte.service';
 import { CategoriasService } from '../../servicios/categorias.service';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -32,6 +33,8 @@ export class ReportesComponent {
 
   salidaTexto = '';
 
+  imagenSubidas:string[];
+
   loginForm: FormGroup = new FormGroup({
     titulo: new FormControl('', [Validators.required, Validators.minLength(7)]),
     categoria: new FormControl('', [Validators.required]),
@@ -40,14 +43,16 @@ export class ReportesComponent {
   });
 
   constructor(private router: Router,
+    private registroService: RegistroUsuarioService,
+    private reporteService: ReporteService,
     private categoriasService: CategoriasService,
-    private RegistroService: RegistroUsuarioService,
     private tokenService: TokenService) {
 
     this.reporteDTO = new ReporteDTO();
     this.categorias = [];
     this.cargarCategoria();
     this.cargarEmail();
+    this.imagenSubidas =[];
   }
 
   public onFileChange(event: any) {
@@ -56,48 +61,49 @@ export class ReportesComponent {
       console.log(files);
 
       this.archivos = event.target.files;
-      this.reporteDTO.imagenes = this.archivos[0].name;
+      this.imagenSubidas.push(this.archivos[0].name);
+      this.reporteDTO.rutaImagenes = this.imagenSubidas;
     }
   }
 
   public registrar() {
 
-    const fechaCreacion: string = new Date().toISOString();
+    const fechaActual: string = new Date().toISOString();
 
     this.reporteDTO.titulo = this.loginForm.get('titulo')?.value;
     this.reporteDTO.categoria = this.loginForm.get('categoria')?.value;
     this.reporteDTO.descripcion = this.loginForm.get('descripcion')?.value;
-    this.reporteDTO.horarios = fechaCreacion;
+    this.reporteDTO.fechaCreacion = fechaActual;
     this.reporteDTO.estado = 'PENDIENTE';
 
     console.log(this.reporteDTO);
 
     // delete this.registroClienteDTO.confirmaPassword;
-    // console.log(this.registroClienteDTO);
-    // this.RegistroService.registrarUsuario(this.registroClienteDTO).subscribe({
-    //   next: (data) => {
-    //     console.log(JSON.stringify(data));
 
-    //     if (data) {
-    //       alert('Cliente registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
-    //       this.router.navigate(['/']);
-    //     }
+    this.reporteService.crearReporte(this.reporteDTO).subscribe({
+      next: (data) => {
+        console.log(JSON.stringify(data));
 
-    //   },
-    //   error: (error) => {
-    //     console.error(JSON.stringify(error));
+        if (data) {
+          alert('Reporte registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
+          this.router.navigate(['/reportes']);
+        }
 
-    //     if (error.status === 500) {
-    //       alert(error.error.data);
-    //     } else {
-    //       if (error.error && error.error.mensaje) {
-    //         console.log(error.error.data);
-    //       } else {
-    //         console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
-    //       }
-    //     }
-    //   },
-    // });
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          alert(error.error.data);
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.data);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
   }
 
   cargarCategoria(): void {
@@ -128,9 +134,9 @@ export class ReportesComponent {
 
     let idUsuario = this.tokenService.getEmail();
 
-    this.RegistroService.obtenerUsuario(idUsuario).subscribe({
+    this.registroService.obtenerUsuario(idUsuario).subscribe({
       next: (data) => {
-        console.log(JSON.stringify(data));
+        console.log("Usuario encontrado: ",JSON.stringify(data));
 
         if (data) {
           const r = data.data;

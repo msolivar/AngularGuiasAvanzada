@@ -17,7 +17,7 @@
                     <select formControlName="categoria" required class="form-select">
                         <option value="" selected>Seleccione la categoria</option>
                         @for (item of categorias; track $index) {
-                        <option [value]="item.id">{{item.nombre}}</option>
+                        <option [value]="item.nombre">{{item.nombre}}</option>
                         }
                     </select>
                 </div>

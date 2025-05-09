@@ -158,7 +158,7 @@ export class CategoriaComponent implements OnInit {
   getCategorias(): void {
     this.categoriasService.obtenerCategorias().subscribe({
       next:(data) => {
-        this.categorias = data.data.nombre;
+        this.categorias = data.data;
         console.log("Categorias encontradas: ", JSON.stringify(data));
       },
       error: (error) => {
@@ -179,8 +179,10 @@ export class CategoriaComponent implements OnInit {
 
   //Buscador Palabras
   categoriasFiltradas(): CategoriaDTO[] {
+    
     if (!this.terminoBusqueda.trim()) {
       return this.categorias;
+      
     }
   
     const termino = this.terminoBusqueda.toLowerCase();

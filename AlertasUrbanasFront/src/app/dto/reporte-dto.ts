@@ -4,11 +4,12 @@ export class ReporteDTO {
     constructor(
         public titulo: string = '',
         public descripcion: string = '',
-        public imagenes: string = '',
+        public rutaImagenes: string[] = [],
         public categoria: string = '',
-        public ubicacion: Ubicacion = new Ubicacion(),
+        public ubicacionDTO: Ubicacion = new Ubicacion(),
         public idUsuario: string = '',
-        public horarios: string = '',
+        public fechaCreacion: string = '',
         public estado: string = '',
+        
     ) { }
 }
