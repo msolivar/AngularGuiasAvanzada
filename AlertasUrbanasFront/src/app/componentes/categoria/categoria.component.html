@@ -16,7 +16,7 @@
             <form #categoriaForm="ngForm">
                 <div class="mb-3">
                     <!-- <label for="categoriaId" class="form-label">ID</label> -->
-                    <input type="text" id="categoriaId" class="form-control" [(ngModel)]="categoriaSeleccionada.id"
+                    <input type="hidden" id="categoriaId" class="form-control" [(ngModel)]="categoriaSeleccionada.id"
                         name="categoriaId">
                 </div>
 
@@ -69,7 +69,6 @@
     <table class="margen table table-hover table-condensed table-bordered mt-3">
         <thead class="table-dark">
             <tr>
-                <!-- <th scope="col">Imagen</th> -->
                 <th scope="col">Nombre</th>
                 <th scope="col">Estado</th>
                 <th scope="col" style="text-align: center">Editar</th>

@@ -48,7 +48,7 @@ export class RegistroComponent {
   public obtenerInformacion(idUsuario: string) {
     this.RegistroService.obtenerUsuario(idUsuario).subscribe({
       next: (data) => {
-        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data.data));
         
         if (data) {
           const r = data.data;

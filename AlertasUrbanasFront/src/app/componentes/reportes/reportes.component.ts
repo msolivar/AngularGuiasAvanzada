@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
   ReactiveFormsModule,
@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
 import { ReporteDTO } from '../../dto/reporte-dto';
+import { consultarMisReportesDTO } from '../../dto/consultar-mis-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
 import { CategoriasService } from '../../servicios/categorias.service';
 import { RouterModule } from '@angular/router';
@@ -21,9 +22,12 @@ import { TokenService } from '../../servicios/token.service';
   templateUrl: './reportes.component.html',
   styleUrl: './reportes.component.css'
 })
-export class ReportesComponent {
+export class ReportesComponent implements OnInit {
   //Inicializar Clase
   reporteDTO = new ReporteDTO();
+
+  //Lista Categorias 
+  misReportes: consultarMisReportesDTO[];
 
   //Lista Categorias 
   categorias: { id: string, nombre: string }[] = [];
@@ -31,9 +35,15 @@ export class ReportesComponent {
   // Archivos
   archivos!: FileList;
 
-  salidaTexto = '';
+  terminoBusqueda: string = '';
 
-  imagenSubidas:string[];
+  salidaTexto: string = '';
+
+  imagenSubidas: string[];
+
+  //Filtro
+  filtroNombre: FormControl = new FormControl('');
+  reportesFiltrados: consultarMisReportesDTO[] = [];
 
   loginForm: FormGroup = new FormGroup({
     titulo: new FormControl('', [Validators.required, Validators.minLength(7)]),
@@ -52,7 +62,15 @@ export class ReportesComponent {
     this.categorias = [];
     this.cargarCategoria();
     this.cargarEmail();
-    this.imagenSubidas =[];
+    this.imagenSubidas = [];
+    this.getMisReporte();
+    this.misReportes = [];
+  }
+
+  ngOnInit(): void {
+    this.filtroNombre.valueChanges.subscribe(valor => {
+      this.filtrarReportes(valor);
+    });
   }
 
   public onFileChange(event: any) {
@@ -136,7 +154,7 @@ export class ReportesComponent {
 
     this.registroService.obtenerUsuario(idUsuario).subscribe({
       next: (data) => {
-        console.log("Usuario encontrado: ",JSON.stringify(data));
+        console.log("Usuario encontrado: ", JSON.stringify(data));
 
         if (data) {
           const r = data.data;
@@ -161,5 +179,45 @@ export class ReportesComponent {
       },
     });
   }
-}
 
+  public getMisReporte() {
+    this.reporteService.consultarMisReportes().subscribe({
+      next: (data) => {
+        // console.log("Mis Reportes",JSON.stringify(data));
+
+        if (data) {
+          this.misReportes = data;
+          this.reportesFiltrados = [...this.misReportes];
+
+          console.log("Asignar mis reportes", this.misReportes);
+
+          // this.salidaTexto = Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
+          // Telefono: ${r.telefono}, Direccion: ${r.direccion};
+        } else {
+          this.salidaTexto = 'No se encontró el usuario.';
+        }
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
+  }
+
+  public filtrarReportes(valor: string): void {
+    const filtro = valor.toLowerCase();
+    this.reportesFiltrados = this.misReportes.filter(reporte =>
+      reporte.nombre.toLowerCase().includes(filtro)
+    );
+  }
+
+}

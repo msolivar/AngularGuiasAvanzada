@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="card">
+    <div class="card" style="background: whitesmoke;">
         <div class="card-header p-4">
             <h5 class="mb-0"> <i class="fa-solid fa-user-plus me-3"></i>Crear Reporte </h5>
         </div>
@@ -34,7 +34,42 @@
                 <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Registrarse</button>
                 <!-- <button type="submit" [disabled]="f.invalid">Registrarse</button> -->
             </form>
+
+        </div>
+
+        <!-- Buscador -->
+        <div class="container">
+            <h2>Mis Reportes</h2>
+
+            <!-- Buscador -->
+            <input type="text" [formControl]="filtroNombre" placeholder="Buscar por nombre..."
+                class="form-control mb-3" />
+
+            <!-- Tabla de reportes -->
+            <table class="margen table table-hover table-condensed table-bordered mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reporte of reportesFiltrados">
+                        <td style="background-color: aliceblue">{{ reporte.nombre }}</td>
+                        <td style="background-color: aliceblue">{{ reporte.categoria }}</td>
+                        <td style="background-color: aliceblue">{{ reporte.descripcion }}</td>
+                        <td style="background-color: aliceblue">{{ reporte.fechaCreacion | date: 'short' }}</td>
+                        <td style="background-color: aliceblue">{{ reporte.estado }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p *ngIf="reportesFiltrados.length === 0">No se encontraron reportes.</p>
         </div>
 
     </div>
+
 </div>
