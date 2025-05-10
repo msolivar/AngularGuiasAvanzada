@@ -40,8 +40,8 @@ export class ReporteService {
     return this.http.delete<MensajeDTO>(`${this.authURL}/${codigoReporte}`);
   }
 
-  public obtenerReportes(page: number, size: number): Observable<any> {
-    return this.http.get<any>(`${this.authURL}/reportes?page=${page}&size=${size}`);
+  public obtenerReportes(size: number): Observable<any> {
+    return this.http.get<any>(`${this.authURL}?page=0&size=${size}`);
   }
 
   //Los Usuarios no pueden marcar su propio reporte

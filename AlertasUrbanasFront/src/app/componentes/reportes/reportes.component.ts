@@ -26,7 +26,7 @@ export class ReportesComponent implements OnInit {
   //Inicializar Clase
   reporteDTO = new ReporteDTO();
 
-  //Lista Categorias 
+  //Lista Reportes 
   misReportes: consultarMisReportesDTO[];
 
   //Lista Categorias 
@@ -194,7 +194,7 @@ export class ReportesComponent implements OnInit {
           // this.salidaTexto = Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
           // Telefono: ${r.telefono}, Direccion: ${r.direccion};
         } else {
-          this.salidaTexto = 'No se encontró el usuario.';
+          this.salidaTexto = 'No se encontró el reporte';
         }
       },
       error: (error) => {
