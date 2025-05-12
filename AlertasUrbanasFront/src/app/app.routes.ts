@@ -9,7 +9,7 @@ import { CuentaComponent } from './componentes/cuenta/cuenta.component';
 import { ReportesComponent }  from './componentes/reportes/reportes.component';
 
 export const routes: Routes = [
-  { path: '', component: InicioComponent },
+  { path: 'inicio/:pagina', component: InicioComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
   { path: 'recuperar-cuenta', component: RecuperarCuentaComponent },
@@ -25,6 +25,6 @@ export const routes: Routes = [
   { path: 'reportes', component: ReportesComponent },
 
   //Ruta Global
-  { path: '**', pathMatch: 'full', redirectTo: '' },
+  { path: '**', pathMatch: 'full', redirectTo: 'inicio/10' },
   
 ];

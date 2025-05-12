@@ -40,7 +40,7 @@ export class ReporteService {
     return this.http.delete<MensajeDTO>(`${this.authURL}/${codigoReporte}`);
   }
 
-  public obtenerReportes(size: number): Observable<any> {
+  public obtenerReportes(size: string): Observable<any> {
     return this.http.get<any>(`${this.authURL}?page=0&size=${size}`);
   }
 

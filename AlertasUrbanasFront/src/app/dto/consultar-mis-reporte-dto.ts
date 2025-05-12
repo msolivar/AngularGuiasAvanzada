@@ -11,6 +11,7 @@ export class consultarMisReportesDTO {
         public ubicacionDTO: Ubicacion = new Ubicacion(),
         public conteoImportantes: number  = 0,
         public promedioEstrellas: number  = 0,
-        public calificaciones: { [key: string]: number } = {}
+        public calificaciones: { [key: string]: number } = {},
+        public rutaImagenes: string[] = [],
     ) {}
 }

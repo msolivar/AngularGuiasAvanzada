@@ -14,6 +14,7 @@ import { CategoriasService } from '../../servicios/categorias.service';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { TokenService } from '../../servicios/token.service';
+import { ImagenService } from '../../servicios/imagen.service';
 
 @Component({
   selector: 'app-reportes',
@@ -56,7 +57,9 @@ export class ReportesComponent implements OnInit {
     private registroService: RegistroUsuarioService,
     private reporteService: ReporteService,
     private categoriasService: CategoriasService,
-    private tokenService: TokenService) {
+    private tokenService: TokenService,
+    private imagenService: ImagenService
+    ) {
 
     this.reporteDTO = new ReporteDTO();
     this.categorias = [];
@@ -73,7 +76,7 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-  public onFileChange(event: any) {
+    public onFileChange(event: any) {
     if (event.target.files.length > 0) {
       const files = event.target.files;
       console.log(files);
@@ -104,7 +107,9 @@ export class ReportesComponent implements OnInit {
 
         if (data) {
           alert('Reporte registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
-          this.router.navigate(['/reportes']);
+          this.router.navigate(['/reportes']).then(() => {
+            window.location.reload();
+          });
         }
 
       },

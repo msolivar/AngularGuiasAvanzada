@@ -1,35 +1,55 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { consultarMisReportesDTO } from '../../dto/consultar-mis-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
 
-
 @Component({
   selector: 'app-inicio',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
 export class InicioComponent {
 
+  paginacion: string = '';
   //Lista Reportes 
   misReportes: consultarMisReportesDTO[];
 
-  salidaTexto: string = '';
+  salidaTexto: string = 'https://www.educapeques.com/wp-content/uploads/2013/01/vida-en-el-campo.jpg.webp';
 
-  constructor(private router: Router,
-    private reporteService: ReporteService){
+  paginas = [
+    { numero: 1, offset: 10 },
+    { numero: 2, offset: 20 },
+    { numero: 3, offset: 30 },
+    { numero: 4, offset: 40 },
+    { numero: 5, offset: 50 },
+    { numero: 6, offset: 60 },
+  ];
+
+  anteriorOffset = 0;  // o calcula dinámicamente según la página actual
+  siguienteOffset = 70;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private reporteService: ReporteService) {
 
     this.getMisReporte();
     this.misReportes = [];
+
+    this.route.paramMap.subscribe(params => {
+      this.paginacion = params.get('pagina') || '';
+    });
   }
 
   public getMisReporte() {
-    this.reporteService.obtenerReportes(10).subscribe({
+    this.reporteService.obtenerReportes(this.paginacion).subscribe({
       next: (data) => {
-        console.log("Mis Reportes",JSON.stringify(data));
+        console.log("Mis Reportes", JSON.stringify(data[0].rutaImagenes));
 
         if (data) {
           this.misReportes = data;
