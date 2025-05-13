@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { consultarMisReportesDTO } from '../../dto/consultar-mis-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-inicio',
@@ -19,7 +20,7 @@ export class InicioComponent {
   //Lista Reportes 
   misReportes: consultarMisReportesDTO[];
 
-  salidaTexto: string = 'https://www.educapeques.com/wp-content/uploads/2013/01/vida-en-el-campo.jpg.webp';
+  salidaTexto: string = '';
 
   paginas = [
     { numero: 1, offset: 10 },
@@ -33,7 +34,7 @@ export class InicioComponent {
   anteriorOffset = 0;  // o calcula dinámicamente según la página actual
   siguienteOffset = 70;
 
-  constructor(
+  constructor(private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
     private reporteService: ReporteService) {
@@ -76,4 +77,50 @@ export class InicioComponent {
       },
     });
   }
+
+  public agregarComentario(idReporte: string): void {
+    // Aquí puedes abrir un modal, redirigir, o llamar a un servicio
+    console.log("Agregar comentario al reporte con ID:", idReporte);
+
+    // Ejemplo: navegar a una ruta de comentarios
+    this.router.navigate(['/comentarios', idReporte]);
+  }
+
+  public agregarReporteImportante(idReporte: string): void {
+
+    // Aquí puedes abrir un modal, redirigir, o llamar a un servicio
+    console.log("Agregar reporte importante con ID:", idReporte);
+
+    this.reporteService.marcarReporteImportante(idReporte).subscribe({
+      next: (data) => {
+        console.log("Mis Reportes", JSON.stringify(data));
+
+        alert(data.mensaje);
+
+        if (data) {
+
+          // this.reportesFiltrados = [...this.misReportes];
+
+          // console.log("Reportes Encontrados", this.misReportes);
+
+        } else {
+          this.salidaTexto = 'No se encontró el reporte';
+        }
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
+  }
+
 }

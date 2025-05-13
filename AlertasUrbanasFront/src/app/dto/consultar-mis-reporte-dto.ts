@@ -12,6 +12,6 @@ export class consultarMisReportesDTO {
         public conteoImportantes: number  = 0,
         public promedioEstrellas: number  = 0,
         public calificaciones: { [key: string]: number } = {},
-        public rutaImagenes: string[] = [],
+        public rutaImagenes: string  = '',
     ) {}
 }

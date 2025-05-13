@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
@@ -7,13 +8,16 @@ import { CategoriasService } from '../../servicios/categorias.service';
 import { TokenService } from '../../servicios/token.service';
 
 @Component({
-  selector: 'app-categoria',
+  selector: 'app-comentarios',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './categoria.component.html',
-  styleUrl: './categoria.component.css'
+  templateUrl: './comentarios.component.html',
+  styleUrl: './comentarios.component.css'
 })
-export class CategoriaComponent implements OnInit {
+export class ComentariosComponent implements OnInit {
+
+  tokenUrl: string = '';
+
   //Inicializar Clase
   categoriaDTO = new CategoriaDTO();
 
@@ -31,11 +35,17 @@ export class CategoriaComponent implements OnInit {
     descripcion: '' 
   };
 
-  constructor(private router: Router, 
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router, 
     private categoriasService: CategoriasService, 
     private tokenService:TokenService){
       this.categoriaDTO = new CategoriaDTO();
       this.categorias = [];
+
+      this.route.paramMap.subscribe(params => {
+      this.tokenUrl = params.get('idreporte') || '';
+    });
     }
 
   ngOnInit(): void {
@@ -57,7 +67,7 @@ export class CategoriaComponent implements OnInit {
   }
 
   //Crear*
-  agregarCategoria(){
+  agregarComentario(){
 
     this.categoriaDTO.nombre = this.categoriaSeleccionada.nombre;
     this.categoriaDTO.descripcion = this.categoriaSeleccionada.descripcion;
@@ -141,6 +151,7 @@ export class CategoriaComponent implements OnInit {
       error: (error) => {
         console.error(JSON.stringify(error));
 
+        
         if (error.status === 500) {
           console.error('Error en el servidor');
         } else {

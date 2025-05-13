@@ -40,7 +40,10 @@ export class ReportesComponent implements OnInit {
 
   salidaTexto: string = '';
 
-  imagenSubidas: string[];
+  //Imagen
+  imagenUrl: string = '';
+  cargando: boolean = false;
+  mensaje: string = '';
 
   //Filtro
   filtroNombre: FormControl = new FormControl('');
@@ -65,9 +68,9 @@ export class ReportesComponent implements OnInit {
     this.categorias = [];
     this.cargarCategoria();
     this.cargarEmail();
-    this.imagenSubidas = [];
     this.getMisReporte();
     this.misReportes = [];
+    this.imagenUrl = "";
   }
 
   ngOnInit(): void {
@@ -76,15 +79,37 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-    public onFileChange(event: any) {
-    if (event.target.files.length > 0) {
-      const files = event.target.files;
-      console.log(files);
-
-      this.archivos = event.target.files;
-      this.imagenSubidas.push(this.archivos[0].name);
-      this.reporteDTO.rutaImagenes = this.imagenSubidas;
+    public onFileChange(event: any): void {
+    const archivo: File = event.target.files[0];
+    if (!archivo) {
+      this.mensaje = 'Selecciona una imagen.';
+      return;
     }
+
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    this.cargando = true;
+    this.mensaje = '';
+
+    this.imagenService.subir(formData).subscribe({
+      next: (respuesta) => {
+
+        console.log("data", JSON.stringify(respuesta));
+        
+        this.imagenUrl = respuesta.data.secure_url;
+        this.mensaje = 'Imagen subida con éxito.';
+        this.cargando = false;
+        this.reporteDTO.rutaImagenes = this.imagenUrl;
+      },
+      error: (error) => {
+        this.mensaje = 'Error al subir la imagen.';
+        console.error("error", JSON.stringify(error));
+        this.cargando = false;
+      }
+    });
+    
+    
   }
 
   public registrar() {
@@ -129,7 +154,7 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-  cargarCategoria(): void {
+  public cargarCategoria(): void {
 
     this.categoriasService.obtenerCategorias().subscribe({
       next: (data) => {

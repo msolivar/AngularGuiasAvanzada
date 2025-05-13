@@ -45,8 +45,8 @@ export class ReporteService {
   }
 
   //Los Usuarios no pueden marcar su propio reporte
-  public marcarReporteImportante(codigoReporte: string | undefined): Observable<MensajeDTO> {
-    return this.http.post<MensajeDTO>(`${this.authURL}/${codigoReporte}/importante`, codigoReporte);
+  public marcarReporteImportante(codigoReporte: string | undefined): Observable<any> {
+    return this.http.post<any>(`${this.authURL}/${codigoReporte}/importante`, codigoReporte);
   }
 
   //Los Usuarios no pueden calificar su propio reporte

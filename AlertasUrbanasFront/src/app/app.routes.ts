@@ -7,6 +7,7 @@ import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cam
 import { CategoriaComponent } from './componentes/categoria/categoria.component';
 import { CuentaComponent } from './componentes/cuenta/cuenta.component';
 import { ReportesComponent }  from './componentes/reportes/reportes.component';
+import { ComentariosComponent }  from './componentes/comentarios/comentarios.component';
 
 export const routes: Routes = [
   { path: 'inicio/:pagina', component: InicioComponent },
@@ -23,6 +24,9 @@ export const routes: Routes = [
 
   //reportes
   { path: 'reportes', component: ReportesComponent },
+
+  //comentario
+  { path: 'comentarios/:idreporte', component: ComentariosComponent },
 
   //Ruta Global
   { path: '**', pathMatch: 'full', redirectTo: 'inicio/10' },

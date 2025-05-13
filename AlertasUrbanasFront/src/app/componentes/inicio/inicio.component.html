@@ -21,7 +21,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div *ngFor="let reporte of misReportes" class="col">
                     <div class="card shadow-sm">
-                        <img [src]="salidaTexto" class="bd-placeholder-img card-img-top" alt="{{reporte.nombre}}"
+                        <img [src]="reporte.rutaImagenes" class="bd-placeholder-img card-img-top" alt="{{reporte.nombre}}"
                             height="225" style="object-fit: cover; width: 100%;" />
                         <div class="card-body">
                             <h5 class="card-title">{{reporte.nombre}}</h5>
@@ -29,9 +29,12 @@
                             <p class="card-text">{{reporte.estado}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Comentar</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Es
-                                        Importante</button>
+                                    <button class="btn btn-sm btn-primary" 
+                                    (click)="agregarComentario(reporte.id)"
+                                    >Comentar</button>
+                                    <button class="btn btn-sm btn-warning"
+                                    (click)="agregarReporteImportante(reporte.id)"
+                                    >Es Importante</button>
                                 </div>
                             </div>
                         </div>
