@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { consultarMisReportesDTO } from '../../dto/consultar-mis-reporte-dto';
+import { CalificarReporteDTO } from '../../dto/calificar-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -50,7 +51,6 @@ export class InicioComponent {
   public getMisReporte() {
     this.reporteService.obtenerReportes(this.paginacion).subscribe({
       next: (data) => {
-        console.log("Mis Reportes", JSON.stringify(data[0].rutaImagenes));
 
         if (data) {
           this.misReportes = data;
@@ -114,12 +114,43 @@ export class InicioComponent {
           console.error('Error en el servidor');
         } else {
           if (error.error && error.error.mensaje) {
-            console.log(error.error.mensaje);
+            console.log(error.error.data);
           } else {
             console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
           }
         }
       },
+    });
+  }
+
+  estrellasArray = [1, 2, 3, 4, 5];
+  calificacion: number = 0;
+  hovered: number = 0;
+
+  calificar(valor: number, idReporte: string) {
+    this.calificacion = valor;
+
+    const dto = new CalificarReporteDTO(valor.toString());
+
+    this.reporteService.calificarReporte(dto, idReporte).subscribe({
+      next: (res) => {
+         console.log('Calificación enviada:', /*JSON.stringify(res)*/);
+
+        this.getMisReporte();
+      },
+      error: (error) => {
+        console.error('Error al calificar:',JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.error(error.error.data);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      }
     });
   }
 

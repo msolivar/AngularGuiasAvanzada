@@ -16,7 +16,7 @@
                     <label for="categoriaDescripcion" class="form-label">Comentario</label>
                     <textarea id="categoriaDescripcion" class="form-control" name="descripcion" required
                         placeholder=" Ingrese el comentario "
-                        [(ngModel)]="categoriaSeleccionada.descripcion">
+                        [(ngModel)]="categoriaSeleccionada.comentarioTexto">
                     </textarea>
                 </div>
             </form>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Buscador -->
-    <!-- <div class="row g-3">
+    <div class="row g-3">
         <div class="d-flex align-items-center">
             <label class="mr-10">Consultar: </label>
             <input type="text" name="buscador" class="form-control" 
@@ -46,37 +46,24 @@
             [(ngModel)]="terminoBusqueda" />
         </div>
     </div>
-    Gestionar Comentarios
     <table class="margen table table-hover table-condensed table-bordered mt-3">
         <thead class="table-dark">
             <tr>
                 <th scope="col">Nombre</th>
                 <th scope="col">Estado</th>
-                <th scope="col" style="text-align: center">Editar</th>
-                <th scope="col" style="text-align: center">Eliminar</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let categoria of categoriasFiltradas()">
+            <tr *ngFor="let comentario of comentarioFiltrados()">
                 <td style="background-color: aliceblue">
-                    <p>{{ categoria.nombre }}</p>
+                    <p>{{ comentario.comentarioTexto }}</p>
                 </td>
                 <td style="background-color: aliceblue">
                     <span>
-                        {{ categoria.descripcion }}
+                        {{ comentario.fecha | date:'dd/MM/yyyy hh:mm:ss a' }}
                     </span>
-                </td>
-                <td style="text-align: center; background-color: aliceblue">
-                    <button class="btn btn-primary" (click)="editarFormulario(categoria)">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                </td>
-                <td style="text-align: center; background-color: aliceblue">
-                    <button class="btn btn-danger" (click)="eliminarCategoria(categoria.id)">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
                 </td>
             </tr>
         </tbody>
-    </table> -->
+    </table>
 </div>

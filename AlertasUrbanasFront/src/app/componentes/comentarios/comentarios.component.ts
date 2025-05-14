@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { CategoriaDTO } from '../../dto/CategoriaDTO';
-import { CategoriasService } from '../../servicios/categorias.service';
+import { ComentarioDTO } from '../../dto/ComentarioDTO';
+import { ComentarioService } from '../../servicios/comentario.service';
 import { TokenService } from '../../servicios/token.service';
 
 @Component({
@@ -16,35 +16,34 @@ import { TokenService } from '../../servicios/token.service';
 })
 export class ComentariosComponent implements OnInit {
 
-  tokenUrl: string = '';
+  idreporte: string = '';
 
   //Inicializar Clase
-  categoriaDTO = new CategoriaDTO();
+  ComentarioDTO = new ComentarioDTO();
 
   //Lista Categorias 
-  categorias: CategoriaDTO[] 
+  categorias: ComentarioDTO[] 
 
-  //monstrar boton agregar y actualizar
+  //monstrar boton agregar y actualizar :idreporte
   mostrarBotonAgregar: boolean = true;
   
   terminoBusqueda: string = '';
 
-  categoriaSeleccionada: CategoriaDTO = { 
-    id: '', 
-    nombre: '', 
-    descripcion: '' 
+  categoriaSeleccionada: ComentarioDTO = { 
+    comentarioTexto: '', 
+    fecha: '', 
   };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router, 
-    private categoriasService: CategoriasService, 
+    private categoriasService: ComentarioService, 
     private tokenService:TokenService){
-      this.categoriaDTO = new CategoriaDTO();
+      this.ComentarioDTO = new ComentarioDTO();
       this.categorias = [];
 
       this.route.paramMap.subscribe(params => {
-      this.tokenUrl = params.get('idreporte') || '';
+      this.idreporte = params.get('idreporte') || '';
     });
     }
 
@@ -53,28 +52,18 @@ export class ComentariosComponent implements OnInit {
     this.getCategorias();
   }
 
-  // Formulario*
-  editarFormulario(categoria: CategoriaDTO): void {
-    this.mostrarBotonAgregar = false;
-    this.categoriaSeleccionada = { ...categoria };
-  }
-
   //Limpiar Campos
   limpiarCampos(){
-    this.categoriaDTO.id = ""; 
-    this.categoriaDTO.nombre = ""; 
-    this.categoriaDTO.descripcion = "";
+    this.ComentarioDTO.comentarioTexto = ""; 
+    this.ComentarioDTO.fecha = ""; 
   }
 
   //Crear*
   agregarComentario(){
 
-    this.categoriaDTO.nombre = this.categoriaSeleccionada.nombre;
-    this.categoriaDTO.descripcion = this.categoriaSeleccionada.descripcion;
+    this.ComentarioDTO.comentarioTexto = this.categoriaSeleccionada.comentarioTexto;
 
-    delete this.categoriaDTO.id;
-
-    this.categoriasService.crearCategoria(this.categoriaDTO).subscribe({
+    this.categoriasService.crearComentario(this.idreporte,this.ComentarioDTO).subscribe({
       next: (data) => {
         console.log('Categoria registrada', JSON.stringify(data));
         
@@ -100,73 +89,8 @@ export class ComentariosComponent implements OnInit {
     
   }
 
-  //Actualizar
-  actualizarCategoria(): void {
-
-    this.categoriaDTO.nombre = this.categoriaSeleccionada.nombre;
-    this.categoriaDTO.descripcion = this.categoriaSeleccionada.descripcion;
-
-    delete this.categoriaDTO.id;
-
-    this.categoriasService.actualizarCategoria(this.categoriaDTO, this.categoriaSeleccionada.id).subscribe({
-      next: (data) => {
-        console.log('Categoria actualizada', JSON.stringify(data));
-        
-        this.getCategorias();
-
-        // this.router.navigate(["/categoria"]).then(() => {
-        //   window.location.reload();
-        // });
-      },
-      error: (error) => {
-        console.error(JSON.stringify(error));
-
-        if (error.status === 500) {
-          console.error('Error en el servidor');
-        } else {
-          if (error.error && error.error.mensaje) {
-            console.log(error.error.mensaje);
-          } else {
-            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
-          }
-        }
-      },
-    });
-  }
-
-  //Eliminar*
-  eliminarCategoria(id: string | undefined ): void {
-    
-    console.log(id);
-    
-    this.categoriasService.eliminarCategoria(id).subscribe({
-      next:(data) => {
-        console.log("Categoria eliminada", JSON.stringify(data));
-
-        this.getCategorias();
-        // this.router.navigate(["/categoria"]).then(() => {
-        //   window.location.reload();
-        // });
-      },
-      error: (error) => {
-        console.error(JSON.stringify(error));
-
-        
-        if (error.status === 500) {
-          console.error('Error en el servidor');
-        } else {
-          if (error.error && error.error.mensaje) {
-            console.log(error.error.mensaje);
-          } else {
-            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
-          }
-        }
-      }
-    })
-  }
-
-  getCategorias(): void {
-    this.categoriasService.obtenerCategorias().subscribe({
+  public getCategorias(): void {
+    this.categoriasService.obtenerComentarios(this.idreporte).subscribe({
       next:(data) => {
         this.categorias = data.data;
         console.log("Categorias encontradas: ", JSON.stringify(data));
@@ -188,7 +112,7 @@ export class ComentariosComponent implements OnInit {
   }
 
   //Buscador Palabras
-  categoriasFiltradas(): CategoriaDTO[] {
+  public comentarioFiltrados(): ComentarioDTO[] {
     
     if (!this.terminoBusqueda.trim()) {
       return this.categorias;
@@ -197,8 +121,7 @@ export class ComentariosComponent implements OnInit {
   
     const termino = this.terminoBusqueda.toLowerCase();
     const filtradas = this.categorias.filter(categoria =>
-      categoria.nombre.toLowerCase().includes(termino) ||
-      categoria.descripcion.toLowerCase().includes(termino)
+      categoria.comentarioTexto.toLowerCase().includes(termino)
     );
   
     // Si no hay coincidencias, retornar todas las categorías

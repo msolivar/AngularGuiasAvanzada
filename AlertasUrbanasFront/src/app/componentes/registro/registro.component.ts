@@ -48,7 +48,7 @@ export class RegistroComponent {
   public obtenerInformacion(idUsuario: string) {
     this.RegistroService.obtenerUsuario(idUsuario).subscribe({
       next: (data) => {
-        console.log(JSON.stringify(data.data));
+        console.log(JSON.stringify(data));
         
         if (data) {
           const r = data.data;
@@ -62,6 +62,8 @@ export class RegistroComponent {
       error: (error) => {
 
         if (error.status === 404) {
+          console.error(error.error.data);
+          
           this.salidaTexto = 'Usuario no encontrado.';
         } else if (error.status === 403) {
           this.salidaTexto = 'Usuario no autentificado';

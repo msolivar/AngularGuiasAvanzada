@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
 import { ReporteDTO } from '../../dto/reporte-dto';
 import { consultarMisReportesDTO } from '../../dto/consultar-mis-reporte-dto';
+import { ActualizarReporteDTO } from '../../dto/actualizar-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
 import { CategoriasService } from '../../servicios/categorias.service';
 import { RouterModule } from '@angular/router';
@@ -26,6 +27,8 @@ import { ImagenService } from '../../servicios/imagen.service';
 export class ReportesComponent implements OnInit {
   //Inicializar Clase
   reporteDTO = new ReporteDTO();
+
+  reporteActualizarDTO = new ActualizarReporteDTO();
 
   //Lista Reportes 
   misReportes: consultarMisReportesDTO[];
@@ -49,11 +52,15 @@ export class ReportesComponent implements OnInit {
   filtroNombre: FormControl = new FormControl('');
   reportesFiltrados: consultarMisReportesDTO[] = [];
 
+  //monstrar boton agregar y actualizar
+  mostrarBotonAgregar: boolean = true;
+
   loginForm: FormGroup = new FormGroup({
+    reporteId: new FormControl('', [Validators.maxLength(100)]),
     titulo: new FormControl('', [Validators.required, Validators.minLength(7)]),
     categoria: new FormControl('', [Validators.required]),
     descripcion: new FormControl('', [Validators.required, Validators.minLength(7)]),
-    imagen: new FormControl('', [Validators.required]),
+    imagen: new FormControl('', [Validators.maxLength(100)]),
   });
 
   constructor(private router: Router,
@@ -62,7 +69,7 @@ export class ReportesComponent implements OnInit {
     private categoriasService: CategoriasService,
     private tokenService: TokenService,
     private imagenService: ImagenService
-    ) {
+  ) {
 
     this.reporteDTO = new ReporteDTO();
     this.categorias = [];
@@ -79,7 +86,7 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-    public onFileChange(event: any): void {
+  public onFileChange(event: any): void {
     const archivo: File = event.target.files[0];
     if (!archivo) {
       this.mensaje = 'Selecciona una imagen.';
@@ -96,7 +103,7 @@ export class ReportesComponent implements OnInit {
       next: (respuesta) => {
 
         console.log("data", JSON.stringify(respuesta));
-        
+
         this.imagenUrl = respuesta.data.secure_url;
         this.mensaje = 'Imagen subida con éxito.';
         this.cargando = false;
@@ -108,11 +115,25 @@ export class ReportesComponent implements OnInit {
         this.cargando = false;
       }
     });
-    
-    
+
+
   }
 
-  public registrar() {
+  // Formulario*
+  compararCategorias = (a: any, b: any): boolean => {
+    return a && b ? a.id === b.id : a === b;
+  };
+  
+  editarFormulario(reporte: consultarMisReportesDTO): void {
+    this.mostrarBotonAgregar = false;
+    this.loginForm.get('titulo')?.setValue(reporte.nombre);
+    this.loginForm.get('descripcion')?.setValue(reporte.descripcion);
+    this.loginForm.get('categoria')?.setValue(reporte.categoria); 
+    this.loginForm.get('reporteId')?.setValue(reporte.id); 
+  }
+
+  //registrar
+  public registrar(): void {
 
     const fechaActual: string = new Date().toISOString();
 
@@ -131,10 +152,8 @@ export class ReportesComponent implements OnInit {
         console.log(JSON.stringify(data));
 
         if (data) {
-          alert('Reporte registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
-          this.router.navigate(['/reportes']).then(() => {
-            window.location.reload();
-          });
+          alert('Reporte registrado');
+          this.getMisReporte();
         }
 
       },
@@ -152,6 +171,69 @@ export class ReportesComponent implements OnInit {
         }
       },
     });
+  }
+
+  //Actualizar
+  actualizarCategoria(): void {
+
+    this.reporteActualizarDTO.nombre = this.loginForm.get('titulo')?.value; 
+    this.reporteActualizarDTO.categoria = this.loginForm.get('categoria')?.value; 
+    this.reporteActualizarDTO.descripcion = this.loginForm.get('descripcion')?.value;  
+    
+    // console.log(JSON.stringify(this.reporteActualizarDTO));
+
+    this.reporteService.actualizarReporte(this.reporteActualizarDTO, this.loginForm.get('reporteId')?.value).subscribe({
+      next: (data) => {
+        console.log('Reporte actualizado', JSON.stringify(data));
+        
+        this.getMisReporte();
+        this.mostrarBotonAgregar = true;
+
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
+  }
+
+  //Eliminar*
+  eliminarReporte(id: string | undefined ): void {
+    
+    console.log(id);
+    
+    this.reporteService.eliminarReporte(id).subscribe({
+      next:(data) => {
+        console.log("Reporte eliminado", JSON.stringify(data));
+
+        this.getMisReporte();
+        // this.router.navigate(["/categoria"]).then(() => {
+        //   window.location.reload();
+        // });
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      }
+    })
   }
 
   public cargarCategoria(): void {
