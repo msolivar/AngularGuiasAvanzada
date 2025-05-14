@@ -7,7 +7,9 @@ import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cam
 import { CategoriaComponent } from './componentes/categoria/categoria.component';
 import { CuentaComponent } from './componentes/cuenta/cuenta.component';
 import { ReportesComponent }  from './componentes/reportes/reportes.component';
+import { ReportecambiarestadoComponent }  from './componentes/reportecambiarestado/reportecambiarestado.component';
 import { ComentariosComponent }  from './componentes/comentarios/comentarios.component';
+
 
 export const routes: Routes = [
   { path: 'inicio/:pagina', component: InicioComponent },
@@ -24,6 +26,9 @@ export const routes: Routes = [
 
   //reportes
   { path: 'reportes', component: ReportesComponent },
+
+  //reporte cambiar Estado
+  { path: 'reporte-cambiar-estado/:idreporteEstado', component: ReportecambiarestadoComponent },
 
   //comentario
   { path: 'comentarios/:idreporte', component: ComentariosComponent },

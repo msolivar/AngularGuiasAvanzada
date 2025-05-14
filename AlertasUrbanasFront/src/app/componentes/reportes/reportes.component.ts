@@ -332,4 +332,10 @@ export class ReportesComponent implements OnInit {
     );
   }
 
+  public EstadoReporte(idReporte: string ): void{
+
+    // Ejemplo: navegar a una ruta de comentarios
+    this.router.navigate(['/reporte-cambiar-estado', idReporte]);
+  }
+
 }

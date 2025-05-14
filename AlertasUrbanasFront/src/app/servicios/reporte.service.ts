@@ -32,8 +32,8 @@ export class ReporteService {
     return this.http.put<MensajeDTO>(`${this.authURL}/${codigoReporte}/estado`, actualizarReporte);
   }
 
-  public obtenerReporte(codigoReporte: string): Observable<MensajeDTO> {
-    return this.http.get<MensajeDTO>(`${this.authURL}/${codigoReporte}`);
+  public obtenerReporte(codigoReporte: string): Observable<any> {
+    return this.http.get<any>(`${this.authURL}/${codigoReporte}`);
   }
 
   public eliminarReporte(codigoReporte: string | undefined): Observable<MensajeDTO> {

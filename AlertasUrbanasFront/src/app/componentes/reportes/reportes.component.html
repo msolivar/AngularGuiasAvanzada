@@ -74,7 +74,12 @@
                         <td style="background-color: aliceblue">{{ reporte.categoria }}</td>
                         <td style="background-color: aliceblue">{{ reporte.descripcion }}</td>
                         <td style="background-color: aliceblue">{{ reporte.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
-                        <td style="background-color: aliceblue">{{ reporte.estado }}</td>
+
+                        <td style="text-align: center; background-color: aliceblue">
+                            <button class="btn btn-warning" (click)="EstadoReporte(reporte.id)">
+                                <i class="fas fa-pencil"></i> {{reporte.estado}} 
+                            </button>
+                        </td>
                         <td style="text-align: center; background-color: aliceblue">
                             <button class="btn btn-primary" (click)="editarFormulario(reporte)">
                                 <i class="fas fa-edit"></i> Editar
