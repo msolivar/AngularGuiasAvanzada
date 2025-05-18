@@ -28,8 +28,8 @@ export class ReporteService {
   }
 
   public cambiarEstadoDelReporte(actualizarReporte: CambiarEstadoReporteDTO, 
-    codigoReporte: string | undefined): Observable<MensajeDTO> {
-    return this.http.put<MensajeDTO>(`${this.authURL}/${codigoReporte}/estado`, actualizarReporte);
+    codigoReporte: string | undefined): Observable<any> {
+    return this.http.put<any>(`${this.authURL}/${codigoReporte}/estado`, actualizarReporte);
   }
 
   public obtenerReporte(codigoReporte: string): Observable<any> {

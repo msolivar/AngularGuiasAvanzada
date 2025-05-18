@@ -54,8 +54,7 @@ export class ComentariosComponent implements OnInit {
 
   //Limpiar Campos
   limpiarCampos(){
-    this.ComentarioDTO.comentarioTexto = ""; 
-    this.ComentarioDTO.fecha = ""; 
+    this.categoriaSeleccionada.comentarioTexto = ""; 
   }
 
   //Crear*
@@ -65,7 +64,7 @@ export class ComentariosComponent implements OnInit {
 
     this.categoriasService.crearComentario(this.idreporte,this.ComentarioDTO).subscribe({
       next: (data) => {
-        console.log('Categoria registrada', JSON.stringify(data));
+        console.log('Comentario registrado', JSON.stringify(data));
         
         this.getCategorias();
         // this.router.navigate(["/categoria"]).then(() => {

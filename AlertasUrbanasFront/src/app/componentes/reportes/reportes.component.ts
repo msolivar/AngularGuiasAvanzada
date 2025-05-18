@@ -16,6 +16,8 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { TokenService } from '../../servicios/token.service';
 import { ImagenService } from '../../servicios/imagen.service';
+import { MapaService } from '../../servicios/mapa.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reportes',
@@ -68,7 +70,8 @@ export class ReportesComponent implements OnInit {
     private reporteService: ReporteService,
     private categoriasService: CategoriasService,
     private tokenService: TokenService,
-    private imagenService: ImagenService
+    private imagenService: ImagenService,
+    private mapaService: MapaService
   ) {
 
     this.reporteDTO = new ReporteDTO();
@@ -84,6 +87,19 @@ export class ReportesComponent implements OnInit {
     this.filtroNombre.valueChanges.subscribe(valor => {
       this.filtrarReportes(valor);
     });
+
+    this.mapaService.crearMapa();
+
+    this.mapaService.agregarMarcador().subscribe((marcador) => {
+
+      this.reporteDTO.ubicacionDTO.latitud = marcador.lat;
+      this.reporteDTO.ubicacionDTO.longitud = marcador.lng;
+    });
+    
+  }
+
+  public imprimirReporteDTO(){
+    console.log("cordenadas", JSON.stringify(this.reporteDTO));
   }
 
   public onFileChange(event: any): void {
@@ -152,7 +168,8 @@ export class ReportesComponent implements OnInit {
         console.log(JSON.stringify(data));
 
         if (data) {
-          alert('Reporte registrado');
+          Swal.fire({text: 'Reporte registrado', icon: 'success', 
+            showConfirmButton: false, timer: 2000});
           this.getMisReporte();
         }
 
@@ -184,8 +201,9 @@ export class ReportesComponent implements OnInit {
 
     this.reporteService.actualizarReporte(this.reporteActualizarDTO, this.loginForm.get('reporteId')?.value).subscribe({
       next: (data) => {
-        console.log('Reporte actualizado', JSON.stringify(data));
         
+        Swal.fire({text: 'Reporte actualizado', icon: 'success', 
+            showConfirmButton: false, timer: 2000});
         this.getMisReporte();
         this.mostrarBotonAgregar = true;
 
@@ -208,8 +226,6 @@ export class ReportesComponent implements OnInit {
 
   //Eliminar*
   eliminarReporte(id: string | undefined ): void {
-    
-    console.log(id);
     
     this.reporteService.eliminarReporte(id).subscribe({
       next:(data) => {

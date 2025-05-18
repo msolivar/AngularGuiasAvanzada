@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
-import { ReporteDTO } from '../../dto/reporte-dto';
 import { CambiarEstadoReporteDTO } from '../../dto/cambiar-estado-reporte-dto';
 import { ReporteService } from '../../servicios/reporte.service';
 import { TokenService } from '../../servicios/token.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reportecambiarestado',
@@ -20,15 +20,18 @@ export class ReportecambiarestadoComponent {
   idreporte: string = '';
   ComentarioDTO = new CambiarEstadoReporteDTO();
 
-  categorias: any[] = []; // Lista que llenaremos como array
+  comentarios: any[] = []; // Lista que llenaremos como array
 
   mostrarBotonAgregar: boolean = true;
   terminoBusqueda: string = '';
 
-  categoriaSeleccionada: CambiarEstadoReporteDTO = { 
+  reporteSeleccionado: CambiarEstadoReporteDTO = { 
     nuevoEstado: '', 
     motivo: '',
   };
+
+  // Lista de ciudades
+  estados: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +41,8 @@ export class ReportecambiarestadoComponent {
   ) {
     this.route.paramMap.subscribe(params => {
       this.idreporte = params.get('idreporteEstado') || '';
-      this.getCategorias();
+      this.getReporte();
+      this.cargarEstados();
     });
   }
 
@@ -51,44 +55,44 @@ export class ReportecambiarestadoComponent {
   //Crear*
   agregarComentario(){
 
-    console.log('Agregar comentario - por implementar');
+    this.ComentarioDTO.motivo = this.reporteSeleccionado.motivo;
+    this.ComentarioDTO.nuevoEstado = this.reporteSeleccionado.nuevoEstado;
 
-    this.ComentarioDTO.motivo = this.categoriaSeleccionada.motivo;
-
-    console.log(JSON.stringify(this.ComentarioDTO));
+    console.log("cambiar Estado",JSON.stringify(this.ComentarioDTO));
     
+    this.categoriasService.cambiarEstadoDelReporte(this.ComentarioDTO,this.idreporte).subscribe({
+      next: (data) => {
 
-    // this.categoriasService.cambiarEstadoDelReporte(this.ComentarioDTO,this.idreporte).subscribe({
-    //   next: (data) => {
-    //     console.log('Estado Actualizado', JSON.stringify(data));
+        Swal.fire({text: 'Estado Actualizado', icon: 'success', 
+            showConfirmButton: false, timer: 2000});
         
-    //     this.getCategorias();
-    //     // this.router.navigate(["/categoria"]).then(() => {
-    //     //   window.location.reload();
-    //     // });
-    //   },
-    //   error: (error) => {
-    //     console.error(JSON.stringify(error));
+        this.getReporte();
+        // this.router.navigate(["/categoria"]).then(() => {
+        //   window.location.reload();
+        // });
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
 
-    //     if (error.status === 500) {
-    //       console.error('Error en el servidor');
-    //     } else {
-    //       if (error.error && error.error.mensaje) {
-    //         console.log(error.error.mensaje);
-    //       } else {
-    //         console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
-    //       }
-    //     }
-    //   },
-    // });
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
     
   }
 
-  public getCategorias(): void {
+  public getReporte(): void {
     this.categoriasService.obtenerReporte(this.idreporte).subscribe({
       next: (data) => {
         // Convertimos el objeto en arreglo para que *ngFor funcione
-        this.categorias = [data];
+        this.comentarios = [data];
         console.log("Reporte encontrado: ", data);
       },
       error: (error) => {
@@ -102,6 +106,13 @@ export class ReportecambiarestadoComponent {
         }
       }
     });
+  }
+
+  //Estados Reportes
+  //PENDIENTE, VERIFICADO, RECHAZADO, ELIMINADO, RESUELTO
+
+  private cargarEstados() {
+    this.estados = ['RESUELTO'];
   }
 
 }

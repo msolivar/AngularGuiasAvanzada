@@ -38,11 +38,21 @@
                     <input type="file" formControlName="imagen" class="form-control" (change)="onFileChange($event)" />
                 </div>
 
-                <button type="submit" class="btn btn-primary" *ngIf="mostrarBotonAgregar" [disabled]="loginForm.invalid">Registrarse</button>
+                <div class="container">
+                    <label class="form-label">Ubicación: </label>
+                    <div id="mapa"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" *ngIf="mostrarBotonAgregar" [disabled]="loginForm.invalid">Registrar Reporte</button>
                 <button [disabled]="loginForm.invalid" *ngIf="!mostrarBotonAgregar" type="button"
                     class="btn btn-warning" (click)="actualizarCategoria()">
-                    <i class="fa-solid fa-rotate-right"></i> Actualizar
+                    <i class="fa-solid fa-rotate-right"></i> Actualizar Reporte
                 </button>
+
+                <!-- <button type="button"
+                    class="btn btn-danger" (click)="imprimirReporteDTO()">
+                    <i class="fa-solid fa-rotate-right"></i> imprimirReporteDTO
+                </button> -->
             </form>
 
         </div>

@@ -10,6 +10,7 @@ import { RegistroUsuarioService } from '../../servicios/registro-usuario.service
 import { RegistroClienteDTO } from '../../dto/registro-cliente-dto';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
@@ -55,6 +56,7 @@ export class RegistroComponent {
           
           this.salidaTexto = `Nombre: ${r.nombre}, Email: ${r.email}, ciudad: ${r.ciudad}
           Telefono: ${r.telefono}, Direccion: ${r.direccion}`;
+
         } else {
           this.salidaTexto = 'No se encontró el usuario.';
         }
@@ -92,8 +94,9 @@ export class RegistroComponent {
         console.log(JSON.stringify(data));
 
         if (data) {
-          alert('Cliente registrado Revise en su badeja de entrada,\nsi su correo existe se le ha enviado un correo con el link de recuperación');
-          this.router.navigate(['/']);
+          alert('Cliente registrado Revise en su badeja de entrada,\nsi el correo existe se le ha enviado un correo para activar su cuenta');
+          
+          this.router.navigate(['/activar-token', this.registroClienteDTO.email]);
         }
         
       },

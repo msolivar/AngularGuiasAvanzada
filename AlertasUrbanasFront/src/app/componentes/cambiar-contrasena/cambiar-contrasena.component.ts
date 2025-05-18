@@ -63,15 +63,16 @@ export class CambiarContrasenaComponent implements OnInit {
 
     this.authService.cambiarContraseña(this.cambioPasswordDto).subscribe({
       next: (data) => {
+        
         console.log('Contraseña modificada correctamente');
       },
       error: (error) => {
-        console.error(error);
+        console.error(JSON.stringify(error));
         
         if (error.status === 200) {
           alert('Contraseña modificada correctamente');
 
-          this.router.navigate(['/']);
+          this.router.navigate(['/login']);
         }
 
         // console.error(JSON.stringify(error));

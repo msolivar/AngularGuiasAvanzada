@@ -18,7 +18,7 @@ export class CategoriaComponent implements OnInit {
   categoriaDTO = new CategoriaDTO();
 
   //Lista Categorias 
-  categorias: CategoriaDTO[] 
+  categorias: CategoriaDTO[]; 
 
   //monstrar boton agregar y actualizar
   mostrarBotonAgregar: boolean = true;
@@ -51,9 +51,8 @@ export class CategoriaComponent implements OnInit {
 
   //Limpiar Campos
   limpiarCampos(){
-    this.categoriaDTO.id = ""; 
-    this.categoriaDTO.nombre = ""; 
-    this.categoriaDTO.descripcion = "";
+    this.categoriaSeleccionada.nombre = ""; 
+    this.categoriaSeleccionada.descripcion = "";
   }
 
   //Crear*
@@ -80,7 +79,7 @@ export class CategoriaComponent implements OnInit {
           console.error('Error en el servidor');
         } else {
           if (error.error && error.error.mensaje) {
-            console.log(error.error.mensaje);
+            console.log(error.error.data);
           } else {
             console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
           }
@@ -103,7 +102,8 @@ export class CategoriaComponent implements OnInit {
         console.log('Categoria actualizada', JSON.stringify(data));
         
         this.getCategorias();
-
+        this.limpiarCampos();
+        this.mostrarBotonAgregar = true;
         // this.router.navigate(["/categoria"]).then(() => {
         //   window.location.reload();
         // });

@@ -1,111 +1,223 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule, FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { 
+  FormGroup,
+  ReactiveFormsModule,
+  FormControl,
+  Validators,
+  FormsModule 
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CategoriasService } from '../../servicios/categorias.service';
-
-interface Persona {
-  nombre: string;
-  edad: number;
-}
+import { RegistroUsuarioService } from '../../servicios/registro-usuario.service';
+import { ActualizarClienteDTO } from '../../dto/actualizar-cliente-dto';
+import { UsuarioDTO } from '../../dto/usuario-dto';
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { TokenService } from '../../servicios/token.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cuenta',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule,
+    FormsModule
+  ], // Habilitar ngModel
   templateUrl: './cuenta.component.html',
   styleUrl: './cuenta.component.css'
 })
-export class CuentaComponent implements OnInit {
-  personas: Persona[] = [];
-  editando: boolean = false;
-  indiceEditando: number | null = null;
+export class CuentaComponent{
+  // Instanciar Clase
+  ActualizarClienteDTO: ActualizarClienteDTO;
 
-  // Formulario reactivo
-  personaForm: FormGroup = new FormGroup({
-    nombre: new FormControl('', [
-      Validators.required,
-      Validators.minLength(7)
-    ]),
-    edad: new FormControl('', [
-      Validators.required,
-      Validators.pattern('^[0-9]+$') // Solo números enteros positivos
-    ])
-  });
+  // Lista de ciudades
+  ciudades: string[];
+
+  //Lista Usuarios 
+  usuarios: UsuarioDTO[]; 
 
   terminoBusqueda: string = '';
+
+  salidaTexto = '';
+
+  // Para alternar visibilidad
+  mostrarPassword: boolean = false;
+
+  email: string = '';
+
+  loginForm: FormGroup = new FormGroup({
+    idUsuario: new FormControl('', [Validators.required]),
+    nombre: new FormControl('', [Validators.required, Validators.minLength(7)]),
+    telefono: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/), Validators.minLength(7)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    ciudad: new FormControl('', [Validators.required]),
+    direccion: new FormControl('', [Validators.required, Validators.minLength(7)]),
+    // password: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(7)])
+  });
+
+  constructor(private router: Router, 
+    private RegistroService: RegistroUsuarioService,
+    private tokenService: TokenService) {
+    this.ActualizarClienteDTO = new ActualizarClienteDTO();
+    this.ciudades = [];
+    this.cargarCiudades(); // Llamado para llenar las ciudades
+
+    this.email = this.tokenService.getEmail();
+    this.obtenerInformacion(this.email);
+    this.usuarios = [];
+  }
+
+  public obtenerInformacion(idUsuario: string) {
+    this.RegistroService.obtenerUsuario(idUsuario).subscribe({
+      next: (data) => {
+        console.log(JSON.stringify(data));
+        
+        if (data) {
+          this.usuarios = [data.data];
+          const r = data.data;
+          
+          this.loginForm.get('idUsuario')?.setValue(r.id);
+          this.loginForm.get('nombre')?.setValue(r.nombre);
+          this.loginForm.get('telefono')?.setValue(r.telefono);
+          this.loginForm.get('email')?.setValue(r.email);
+          this.loginForm.get('ciudad')?.setValue(r.ciudad);
+          this.loginForm.get('direccion')?.setValue(r.direccion);
+
+        } else {
+          this.salidaTexto = 'No se encontró el usuario.';
+        }
+      },
+      error: (error) => {
+
+        if (error.status === 404) {
+          console.error(error.error.data);
+          
+          this.salidaTexto = 'Usuario no encontrado.';
+        } else if (error.status === 403) {
+          this.salidaTexto = 'Usuario no autentificado';
+        } else {
+          this.salidaTexto = 'Error al obtener la información.';
+        }
+
+        // console.error(JSON.stringify(error));
+      },
+    });
+  }
+
+  public actualizarCuenta() {
+
+    this.ActualizarClienteDTO.nombre = this.loginForm.get('nombre')?.value; 
+    this.ActualizarClienteDTO.ciudad = this.loginForm.get('ciudad')?.value;
+    this.ActualizarClienteDTO.direccion = this.loginForm.get('direccion')?.value;
+    this.ActualizarClienteDTO.telefono = this.loginForm.get('telefono')?.value;
+    this.ActualizarClienteDTO.email = this.loginForm.get('email')?.value;
+    // this.ActualizarClienteDTO.passwordActual = this.loginForm.get('password')?.value;
+    // this.ActualizarClienteDTO.nuevaPassword = this.loginForm.get('password')?.value;
+
+    delete this.ActualizarClienteDTO.nombre;
+    // console.log(this.ActualizarClienteDTO);
+    this.RegistroService.actualizarUsuario(this.loginForm.get('idUsuario')?.value,this.ActualizarClienteDTO).subscribe({
+      next: (data) => {
+        console.log(JSON.stringify(data));
+
+        if (data) {
+          Swal.fire({text: data.mensaje, icon: 'success', 
+            showConfirmButton: false, timer: 2000});
+
+          this.email = this.tokenService.getEmail();
+          this.obtenerInformacion(this.email);
+        }
+        
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          alert(error.error.data);
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.data);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      },
+    });
+
+    // this.RegistroService.actualizarPassword(this.ActualizarClienteDTO).subscribe({
+    //   next: (data) => {
+    //     console.log(JSON.stringify(data));
+
+    //     if (data) {
+    //       alert('Contraseña Actualizada. \n');
+    //     }
+        
+    //   },
+    //   error: (error) => {
+    //     console.error(JSON.stringify(error));
+
+    //     if (error.status === 500) {
+    //       alert(error.error.data);
+    //     } else {
+    //       if (error.error && error.error.mensaje) {
+    //         console.log(error.error.data);
+    //       } else {
+    //         console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+    //       }
+    //     }
+    //   },
+    // });
+  }
+
+  private cargarCiudades() {
+    this.ciudades = ['CALI', 'MEDELLIN', 'ARMENIA', 'MANIZALES', 'PEREIRA', 'BOGOTA'];
+  }
+
+  public eliminarCuenta(){
+
+    this.RegistroService.eliminarUsuario(this.loginForm.get('idUsuario')?.value).subscribe({
+      next:(data) => {
+        console.log("Usuario eliminado", JSON.stringify(data));
+
+        alert(data.mensaje);
+        
+        this.email = this.tokenService.getEmail();
+        this.obtenerInformacion(this.email);
+
+        this.tokenService.logout();
+        // this.router.navigate(["/categoria"]).then(() => {
+        //   window.location.reload();
+        // });
+      },
+      error: (error) => {
+        console.error(JSON.stringify(error));
+
+        if (error.status === 500) {
+          console.error('Error en el servidor');
+        } else {
+          if (error.error && error.error.mensaje) {
+            console.log(error.error.mensaje);
+          } else {
+            console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
+          }
+        }
+      }
+    })
+  }
+
+  //Buscador Palabras
+  categoriasFiltradas(): UsuarioDTO[] {
+    
+    if (!this.terminoBusqueda.trim()) {
+      return this.usuarios;
+      
+    }
   
-  constructor(private negociosService:CategoriasService){}
-
-  ngOnInit(): void {
-    // Inicialización si es necesaria
-    this.personaForm.setValue({
-      nombre: "karen dayana",
-      edad: 21
-    });
-
-  }
-
-  // Agrega o actualiza una persona
-  guardarPersona(): void {
-    if (this.personaForm.invalid) {
-      this.personaForm.markAllAsTouched();
-      return;
-    }
-
-    const nuevaPersona: Persona = {
-      nombre: this.personaForm.value.nombre,
-      edad: Number(this.personaForm.value.edad)
-    };
-
-    if (this.editando && this.indiceEditando !== null) {
-      this.personas[this.indiceEditando] = nuevaPersona;
-      this.editando = false;
-      this.indiceEditando = null;
-    } else {
-      this.personas.push(nuevaPersona);
-    }
-
-    this.personaForm.reset();
-  }
-
-  // Carga la persona seleccionada en el formulario
-  editarPersona(index: number): void {
-    const persona = this.personas[index];
-    this.personaForm.setValue({
-      nombre: persona.nombre,
-      edad: persona.edad
-    });
-    this.editando = true;
-    this.indiceEditando = index;
-  }
-
-  // Elimina una persona de la lista
-  eliminarPersona(index: number): void {
-    this.personas.splice(index, 1);
-
-    // Si se estaba editando esta persona, cancela la edición
-    if (this.editando && this.indiceEditando === index) {
-      this.personaForm.reset();
-      this.editando = false;
-      this.indiceEditando = null;
-    }
-  }
-
-  // Filtra la lista según el término de búsqueda
-  personasFiltradas(): Persona[] {
     const termino = this.terminoBusqueda.toLowerCase();
-    return this.personas.filter(p =>
-      p.nombre.toLowerCase().includes(termino) ||
-      p.edad.toString().includes(termino)
+    const filtradas = this.usuarios.filter(categoria =>
+      categoria.nombre.toLowerCase().includes(termino) ||
+      categoria.ciudad.toLowerCase().includes(termino)
     );
-  }
-
-  // Getters para acceder fácilmente a los controles desde la plantilla
-  get nombre() {
-    return this.personaForm.get('nombre');
-  }
-
-  get edad() {
-    return this.personaForm.get('edad');
+  
+    // Si no hay coincidencias, retornar todas las categorías
+    return filtradas.length > 0 ? filtradas : this.usuarios;
   }
 }

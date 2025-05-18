@@ -11,6 +11,7 @@ import { TokenService } from '../../servicios/token.service';
 import { AuthService } from '../../servicios/auth.service';
 import { LoginDTO } from '../../dto/LoginDTO';
 import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -61,7 +62,10 @@ export class LoginComponent implements OnInit {
           console.log('Error de conexión');
         } else {
           if (error.error && error.error.mensaje) {
-            console.log(error.error.data);
+
+            Swal.fire({text: error.error.data, icon: 'error',
+            showConfirmButton: false, timer: 2000});
+
           } else {
             console.log('Se produjo un error, por favor verifica tus datos o intenta más tarde.');
           }

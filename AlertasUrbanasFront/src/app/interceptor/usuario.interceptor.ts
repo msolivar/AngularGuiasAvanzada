@@ -5,10 +5,10 @@ import { TokenService } from '../servicios/token.service';
 export const usuarioInterceptor: HttpInterceptorFn = (req, next) => {
 
   const tokenService = inject(TokenService);
-  const isApiUrl = req.url.includes("api/auth");
-  const isAPIPublico = req.url.includes("api/publico");
-
-  if(!tokenService.isLogged() || isApiUrl || isAPIPublico){
+  // const isApiUrl = req.url.includes("api/auth");
+  // const isAPIPublico = req.url.includes("api/publico");
+// || isApiUrl || isAPIPublico
+  if(!tokenService.isLogged()){
     return next(req);
   }
 
@@ -20,4 +20,6 @@ export const usuarioInterceptor: HttpInterceptorFn = (req, next) => {
     }
   });
   return next(authReq);
+
+  //Hombre medio
 };
